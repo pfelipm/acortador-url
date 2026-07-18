@@ -1540,7 +1540,22 @@
 
     function openConfirmModal(slug) {
       slugToDelete = slug;
-      confirmSlugText.textContent = `/${slug}`;
+      
+      // Traducir dinámicamente los textos del modal
+      const modalTitleEl = document.querySelector('#confirm-modal h2');
+      if (modalTitleEl) modalTitleEl.textContent = t('modal_delete_title');
+      
+      const confirmBody = document.querySelector('#confirm-modal .modal-body');
+      if (confirmBody) {
+        confirmBody.innerHTML = `<p>${t('modal_delete_confirm')} <strong id="confirm-slug-text" style="color: #ef4444;">/${slug}</strong>? ${t('modal_delete_warn')}</p>`;
+      }
+      
+      const cancelBtn = document.getElementById('cancel-delete-btn');
+      if (cancelBtn) cancelBtn.textContent = t('modal_cancel');
+      
+      const confirmBtnText = document.querySelector('#confirm-delete-btn span');
+      if (confirmBtnText) confirmBtnText.textContent = t('modal_delete');
+      
       confirmModal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
       lucide.createIcons();
