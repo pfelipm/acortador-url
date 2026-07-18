@@ -119,6 +119,8 @@ export default async function handler(req, res) {
     // Usuario registrado
     if (expiry === '24h') {
       expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    } else if (expiry === '48h') {
+      expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
     } else if (expiry === '7d') {
       expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     } else if (expiry === '30d') {
