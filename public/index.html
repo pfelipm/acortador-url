@@ -229,7 +229,7 @@
             </div>
           </div>
 
-          <div class="input-group id-confirm-group hidden" id="confirm-password-group">
+          <div class="input-group hidden" id="confirm-password-group">
             <label for="auth-confirm-password">Confirmar contraseña</label>
             <div class="input-wrapper">
               <i data-lucide="lock" class="input-icon"></i>
@@ -520,6 +520,7 @@
         toast_copied: "Enlace copiado.",
         toast_login_welcome: "Bienvenido de nuevo.",
         toast_signup_success: "Cuenta creada con éxito.",
+        toast_signup_check_email: "Registro iniciado. Revisa tu correo para confirmar tu cuenta.",
         toast_logout_success: "Sesión cerrada correctamente.",
         toast_qr_lib_error: "La librería de códigos QR no se ha cargado correctamente.",
         toast_reset_link_sent: "Enlace de recuperación enviado. Revisa tu correo.",
@@ -588,6 +589,7 @@
         toast_copied: "Link copied.",
         toast_login_welcome: "Welcome back.",
         toast_signup_success: "Account created successfully.",
+        toast_signup_check_email: "Registration started. Check your email to confirm your account.",
         toast_logout_success: "Logged out successfully.",
         toast_qr_lib_error: "The QR code library was not loaded successfully.",
         toast_reset_link_sent: "Reset link sent. Please check your email.",
@@ -1240,7 +1242,7 @@
         if (authMode === 'login') {
           result = await supabaseClient.auth.signInWithPassword({ email, password });
         } else if (authMode === 'signup') {
-          result = await supabaseClient.auth.signUp({ email, password });
+          result = await supabaseClient.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } });
         } else if (authMode === 'forgot') {
           result = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin });
         } else if (authMode === 'reset-password') {
@@ -1258,7 +1260,7 @@
           showToast(t('toast_password_updated'), 'success');
           closeAuthModal();
         } else if (authMode === 'signup' && result.data.user && result.data.session === null) {
-          showToast('Registro iniciado. Por favor revisa tu correo para confirmar.', 'success');
+          showToast(t('toast_signup_check_email'), 'success');
           closeAuthModal();
         } else {
           showToast(authMode === 'login' ? t('toast_login_welcome') : t('toast_signup_success'), 'success');
