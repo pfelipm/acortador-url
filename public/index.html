@@ -207,16 +207,19 @@
         </div>
         
         <form id="auth-form" class="auth-form">
-          <div class="input-group">
-            <label for="auth-email">Correo electrónico</label>
+          <div class="input-group" id="email-group">
+            <label for="auth-email" id="auth-email-label">Correo electrónico</label>
             <div class="input-wrapper">
               <i data-lucide="mail" class="input-icon"></i>
               <input type="email" id="auth-email" required placeholder="tu@email.com">
             </div>
           </div>
 
-          <div class="input-group">
-            <label for="auth-password">Contraseña</label>
+          <div class="input-group" id="password-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <label for="auth-password" id="auth-password-label">Contraseña</label>
+              <a href="#" id="forgot-password-link" style="font-size: 0.8rem; color: var(--primary); text-decoration: underline;" data-i18n="auth_forgot_link">¿Olvidaste tu contraseña?</a>
+            </div>
             <div class="input-wrapper">
               <i data-lucide="lock" class="input-icon"></i>
               <input type="password" id="auth-password" required placeholder="••••••••" minlength="6">
@@ -515,6 +518,16 @@
         toast_signup_success: "Cuenta creada con éxito.",
         toast_logout_success: "Sesión cerrada correctamente.",
         toast_qr_lib_error: "La librería de códigos QR no se ha cargado correctamente.",
+        toast_reset_link_sent: "Enlace de recuperación enviado. Revisa tu correo.",
+        toast_password_updated: "Contraseña actualizada correctamente.",
+        auth_forgot_link: "¿Olvidaste tu contraseña?",
+        modal_forgot_title: "Recuperar contraseña",
+        modal_reset_title: "Nueva contraseña",
+        label_new_password: "Nueva contraseña",
+        label_confirm_new_password: "Confirmar nueva contraseña",
+        btn_send_reset_link: "Enviar enlace",
+        btn_save_password: "Guardar contraseña",
+        auth_back_to_login: "Volver a iniciar sesión",
         about_date: "Actualizado: 18 de julio de 2026",
         about_p1: "<strong>at.pablofelip.online</strong> es una herramienta <em>experimental y algo gamberra</em> que surge durante la sobremesa del segundo día de la reunión anual de <strong><a href='https://transformacioneducativa.es/' target='_blank' style='color: var(--primary); text-decoration: underline;'>GEG Spain</a></strong> 🎓.",
         about_p2: "Esta app nació en un momento de inspiración colectiva (o de paciencia infinita), mientras le daba una buena turra a mis sufridos compañeros del <strong><a href='https://transformacioneducativa.es/somos/' target='_blank' style='color: var(--primary); text-decoration: underline;'>equipo</a></strong> (a quienes tanto debo) debatiendo sobre los límites de las webapps en Google Apps Script y cuándo no queda más remedio que dar el salto a entornos robustos como Vercel y Supabase.",
@@ -572,6 +585,16 @@
         toast_signup_success: "Account created successfully.",
         toast_logout_success: "Logged out successfully.",
         toast_qr_lib_error: "The QR code library was not loaded successfully.",
+        toast_reset_link_sent: "Reset link sent. Please check your email.",
+        toast_password_updated: "Password updated successfully.",
+        auth_forgot_link: "Forgot your password?",
+        modal_forgot_title: "Reset password",
+        modal_reset_title: "New password",
+        label_new_password: "New password",
+        label_confirm_new_password: "Confirm new password",
+        btn_send_reset_link: "Send link",
+        btn_save_password: "Save password",
+        auth_back_to_login: "Back to login",
         about_date: "Updated: July 18, 2026",
         about_p1: "<strong>at.pablofelip.online</strong> is an <em>experimental and slightly mischievous</em> tool that emerged during dinner on the second day of the annual meeting of <strong><a href='https://transformacioneducativa.es/' target='_blank' style='color: var(--primary); text-decoration: underline;'>GEG Spain</a></strong> 🎓.",
         about_p2: "This app was born in a moment of collective inspiration (or infinite patience), while giving a good earful to my long-suffering teammates (to whom I owe so much) debating the limits of webapps in Google Apps Script and when there is no choice but to leap to robust environments like Vercel and Supabase.",
@@ -616,6 +639,9 @@
     const authPassword = document.getElementById('auth-password');
     const authConfirmPassword = document.getElementById('auth-confirm-password');
     const confirmPasswordGroup = document.getElementById('confirm-password-group');
+    const emailGroup = document.getElementById('email-group');
+    const passwordGroup = document.getElementById('password-group');
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
     const authSubmitBtn = document.getElementById('auth-submit-btn');
     const modalTitle = document.getElementById('modal-title');
     const authSwitchLink = document.getElementById('auth-switch-link');
@@ -946,6 +972,10 @@
         // Escuchar cambios de estado de autenticación
         supabaseClient.auth.onAuthStateChange((event, session) => {
           updateUserSession(session?.user || null);
+          
+          if (event === 'PASSWORD_RECOVERY') {
+            openAuthModal('reset-password');
+          }
         });
 
       } catch (err) {
@@ -1070,27 +1100,82 @@
       authModal.classList.remove('hidden');
       document.body.style.overflow = 'hidden'; // Bloquear scroll
       
+      // Mostrar todos los grupos por defecto
+      emailGroup.classList.remove('hidden');
+      passwordGroup.classList.remove('hidden');
+      confirmPasswordGroup.classList.add('hidden');
+      authEmail.setAttribute('required', 'required');
+      authPassword.setAttribute('required', 'required');
+      authConfirmPassword.removeAttribute('required');
+      
+      // Resetear etiquetas por defecto
+      document.querySelector('#email-group label').textContent = currentLang === 'en' ? 'Email address' : 'Correo electrónico';
+      document.querySelector('#password-group label').innerHTML = `
+        <span id="auth-password-label">${currentLang === 'en' ? 'Password' : 'Contraseña'}</span>
+        <a href="#" id="forgot-password-link" style="font-size: 0.8rem; color: var(--primary); text-decoration: underline;">${t('auth_forgot_link')}</a>
+      `;
+      document.querySelector('#confirm-password-group label').textContent = currentLang === 'en' ? 'Confirm password' : 'Confirmar contraseña';
+
+      // Re-vincular el evento del link de recuperación
+      bindForgotPasswordLink();
+
       if (mode === 'login') {
-        modalTitle.textContent = 'Iniciar sesión';
-        authSubmitBtn.querySelector('span').textContent = 'Entrar';
+        modalTitle.textContent = currentLang === 'en' ? 'Log in' : 'Iniciar sesión';
+        authSubmitBtn.querySelector('span').textContent = currentLang === 'en' ? 'Log in' : 'Entrar';
         authSubmitBtn.querySelector('i').setAttribute('data-lucide', 'log-in');
-        authSwitchText.innerHTML = '¿No tienes cuenta? <a href="#" id="auth-switch-link">Regístrate gratis</a>';
-        
-        // Ocultar confirmación de contraseña
-        confirmPasswordGroup.classList.add('hidden');
-        authConfirmPassword.removeAttribute('required');
-      } else {
-        modalTitle.textContent = 'Crear cuenta';
-        authSubmitBtn.querySelector('span').textContent = 'Registrarse';
+        authSwitchText.innerHTML = currentLang === 'en' 
+          ? 'Don\'t have an account? <a href="#" id="auth-switch-link">Sign up for free</a>'
+          : '¿No tienes cuenta? <a href="#" id="auth-switch-link">Regístrate gratis</a>';
+      } else if (mode === 'signup') {
+        modalTitle.textContent = currentLang === 'en' ? 'Create account' : 'Crear cuenta';
+        authSubmitBtn.querySelector('span').textContent = currentLang === 'en' ? 'Sign up' : 'Registrarse';
         authSubmitBtn.querySelector('i').setAttribute('data-lucide', 'user-plus');
-        authSwitchText.innerHTML = '¿Ya tienes cuenta? <a href="#" id="auth-switch-link">Inicia sesión aquí</a>';
-        
-        // Mostrar confirmación de contraseña
+        authSwitchText.innerHTML = currentLang === 'en'
+          ? 'Already have an account? <a href="#" id="auth-switch-link">Log in here</a>'
+          : '¿Ya tienes cuenta? <a href="#" id="auth-switch-link">Inicia sesión aquí</a>';
         confirmPasswordGroup.classList.remove('hidden');
         authConfirmPassword.setAttribute('required', 'required');
+        const forgotLink = document.getElementById('forgot-password-link');
+        if (forgotLink) forgotLink.classList.add('hidden');
+      } else if (mode === 'forgot') {
+        modalTitle.textContent = t('modal_forgot_title');
+        authSubmitBtn.querySelector('span').textContent = t('btn_send_reset_link');
+        authSubmitBtn.querySelector('i').setAttribute('data-lucide', 'send');
+        authSwitchText.innerHTML = `<a href="#" id="auth-switch-to-login-link">${t('auth_back_to_login')}</a>`;
+        
+        // Ocultar contraseña
+        passwordGroup.classList.add('hidden');
+        authPassword.removeAttribute('required');
+      } else if (mode === 'reset-password') {
+        modalTitle.textContent = t('modal_reset_title');
+        authSubmitBtn.querySelector('span').textContent = t('btn_save_password');
+        authSubmitBtn.querySelector('i').setAttribute('data-lucide', 'save');
+        authSwitchText.innerHTML = ''; // Sin navegación adicional
+        
+        // Ocultar email
+        emailGroup.classList.add('hidden');
+        authEmail.removeAttribute('required');
+        
+        // Mostrar contraseña y confirmación
+        confirmPasswordGroup.classList.remove('hidden');
+        authConfirmPassword.setAttribute('required', 'required');
+        
+        // Cambiar etiquetas para mayor claridad
+        document.querySelector('#password-group label').textContent = t('label_new_password');
+        document.querySelector('#confirm-password-group label').textContent = t('label_confirm_new_password');
       }
 
       lucide.createIcons();
+    }
+
+    function bindForgotPasswordLink() {
+      const link = document.getElementById('forgot-password-link');
+      if (link) {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          openAuthModal('forgot');
+        });
+      }
     }
 
     // Delegación de eventos para alternar entre Login y Registro
@@ -1098,6 +1183,9 @@
       if (e.target && e.target.id === 'auth-switch-link') {
         e.preventDefault();
         openAuthModal(authMode === 'login' ? 'signup' : 'login');
+      } else if (e.target && e.target.id === 'auth-switch-to-login-link') {
+        e.preventDefault();
+        openAuthModal('login');
       }
     });
 
@@ -1121,42 +1209,62 @@
       const password = authPassword.value;
       const confirmPassword = authConfirmPassword.value;
 
-      // Validación extra en el cliente para contraseñas duplicadas
-      if (authMode === 'signup' && password !== confirmPassword) {
-        showToast('Las contraseñas no coinciden. Por favor verifícalas.', 'error');
+      // Validación de contraseñas coincidentes para registro y reseteo
+      if ((authMode === 'signup' || authMode === 'reset-password') && password !== confirmPassword) {
+        showToast(currentLang === 'en' ? 'Passwords do not match. Please verify them.' : 'Las contraseñas no coinciden. Por favor verifícalas.', 'error');
         return;
       }
       
       authSubmitBtn.disabled = true;
       authSubmitBtn.classList.add('loading');
-      authSubmitBtn.querySelector('span').textContent = authMode === 'login' ? 'Accediendo...' : 'Creando cuenta...';
+      
+      let loadingText = 'Accediendo...';
+      if (authMode === 'signup') loadingText = 'Creando cuenta...';
+      else if (authMode === 'forgot') loadingText = 'Enviando enlace...';
+      else if (authMode === 'reset-password') loadingText = 'Guardando...';
+      authSubmitBtn.querySelector('span').textContent = loadingText;
 
       try {
-        let result;
+        let result = {};
         if (authMode === 'login') {
           result = await supabaseClient.auth.signInWithPassword({ email, password });
-        } else {
+        } else if (authMode === 'signup') {
           result = await supabaseClient.auth.signUp({ email, password });
+        } else if (authMode === 'forgot') {
+          result = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin });
+        } else if (authMode === 'reset-password') {
+          result = await supabaseClient.auth.updateUser({ password: password });
         }
 
         if (result.error) {
           throw result.error;
         }
 
-        if (authMode === 'signup' && result.data.user && result.data.session === null) {
+        if (authMode === 'forgot') {
+          showToast(t('toast_reset_link_sent'), 'success');
+          closeAuthModal();
+        } else if (authMode === 'reset-password') {
+          showToast(t('toast_password_updated'), 'success');
+          closeAuthModal();
+        } else if (authMode === 'signup' && result.data.user && result.data.session === null) {
           showToast('Registro iniciado. Por favor revisa tu correo para confirmar.', 'success');
+          closeAuthModal();
         } else {
           showToast(authMode === 'login' ? t('toast_login_welcome') : t('toast_signup_success'), 'success');
+          closeAuthModal();
         }
-        
-        closeAuthModal();
 
       } catch (err) {
         showToast(getFriendlyErrorMessage(err.message), 'error');
       } finally {
         authSubmitBtn.disabled = false;
         authSubmitBtn.classList.remove('loading');
-        authSubmitBtn.querySelector('span').textContent = authMode === 'login' ? 'Entrar' : 'Registrarse';
+        
+        let btnText = 'Entrar';
+        if (authMode === 'signup') btnText = 'Registrarse';
+        else if (authMode === 'forgot') btnText = t('btn_send_reset_link');
+        else if (authMode === 'reset-password') btnText = t('btn_save_password');
+        authSubmitBtn.querySelector('span').textContent = btnText;
       }
     });
 
