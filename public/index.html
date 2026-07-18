@@ -1132,17 +1132,20 @@
       // Re-vincular el evento del link de recuperación
       bindForgotPasswordLink();
 
+      // Helper: Lucide reemplaza <i> por <svg>, buscar ambos
+      const btnIcon = authSubmitBtn.querySelector('i') || authSubmitBtn.querySelector('svg');
+
       if (mode === 'login') {
         modalTitle.textContent = currentLang === 'en' ? 'Log in' : 'Iniciar sesión';
         authSubmitBtn.querySelector('span').textContent = currentLang === 'en' ? 'Log in' : 'Entrar';
-        authSubmitBtn.querySelector('i').setAttribute('data-lucide', 'log-in');
+        if (btnIcon) { btnIcon.replaceWith(Object.assign(document.createElement('i'), { dataset: { lucide: 'log-in' } })); }
         authSwitchText.innerHTML = currentLang === 'en' 
           ? 'Don\'t have an account? <a href="#" id="auth-switch-link">Sign up for free</a>'
           : '¿No tienes cuenta? <a href="#" id="auth-switch-link">Regístrate gratis</a>';
       } else if (mode === 'signup') {
         modalTitle.textContent = currentLang === 'en' ? 'Create account' : 'Crear cuenta';
         authSubmitBtn.querySelector('span').textContent = currentLang === 'en' ? 'Sign up' : 'Registrarse';
-        authSubmitBtn.querySelector('i').setAttribute('data-lucide', 'user-plus');
+        if (btnIcon) { btnIcon.replaceWith(Object.assign(document.createElement('i'), { dataset: { lucide: 'user-plus' } })); }
         authSwitchText.innerHTML = currentLang === 'en'
           ? 'Already have an account? <a href="#" id="auth-switch-link">Log in here</a>'
           : '¿Ya tienes cuenta? <a href="#" id="auth-switch-link">Inicia sesión aquí</a>';
@@ -1153,7 +1156,7 @@
       } else if (mode === 'forgot') {
         modalTitle.textContent = t('modal_forgot_title');
         authSubmitBtn.querySelector('span').textContent = t('btn_send_reset_link');
-        authSubmitBtn.querySelector('i').setAttribute('data-lucide', 'send');
+        if (btnIcon) { btnIcon.replaceWith(Object.assign(document.createElement('i'), { dataset: { lucide: 'send' } })); }
         authSwitchText.innerHTML = `<a href="#" id="auth-switch-to-login-link">${t('auth_back_to_login')}</a>`;
         
         // Ocultar contraseña
@@ -1162,7 +1165,7 @@
       } else if (mode === 'reset-password') {
         modalTitle.textContent = t('modal_reset_title');
         authSubmitBtn.querySelector('span').textContent = t('btn_save_password');
-        authSubmitBtn.querySelector('i').setAttribute('data-lucide', 'save');
+        if (btnIcon) { btnIcon.replaceWith(Object.assign(document.createElement('i'), { dataset: { lucide: 'save' } })); }
         authSwitchText.innerHTML = ''; // Sin navegación adicional
         
         // Ocultar email
