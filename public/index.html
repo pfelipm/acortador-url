@@ -212,7 +212,7 @@
           <button id="close-modal-btn" class="close-btn">&times;</button>
         </div>
         
-        <form id="auth-form" class="auth-form">
+        <form id="auth-form" class="auth-form" novalidate>
           <div class="input-group" id="email-group">
             <label for="auth-email" id="auth-email-label">Correo electrónico</label>
             <div class="input-wrapper">
@@ -555,6 +555,7 @@
         err_password_too_short: "La contraseña debe tener al menos 6 caracteres.",
         err_verification_required: "Se requiere verificar la cuenta por correo electrónico.",
         err_db_save: "Error en la base de datos al guardar el usuario.",
+        err_email_required: "Por favor introduce tu correo electrónico.",
         err_invalid_email: "El formato del correo electrónico no es válido.",
         auth_forgot_link: "¿Olvidaste tu contraseña?",
         modal_forgot_title: "Recuperar contraseña",
@@ -652,6 +653,7 @@
         err_password_too_short: "Password must be at least 6 characters long.",
         err_verification_required: "Email verification is required.",
         err_db_save: "Database error saving user.",
+        err_email_required: "Please enter your email address.",
         err_invalid_email: "The email format is invalid.",
         auth_forgot_link: "Forgot your password?",
         modal_forgot_title: "Reset password",
@@ -1291,6 +1293,19 @@
       const email = authEmail.value.trim();
       const password = authPassword.value;
       const confirmPassword = authConfirmPassword.value;
+
+      // Validación de correo electrónico (excepto en reset-password)
+      if (authMode !== 'reset-password') {
+        if (!email) {
+          showToast(t('err_email_required'), 'error');
+          return;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          showToast(t('err_invalid_email'), 'error');
+          return;
+        }
+      }
 
       // Validación de contraseñas coincidentes para registro y reseteo
       if ((authMode === 'signup' || authMode === 'reset-password') && password !== confirmPassword) {
