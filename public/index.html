@@ -552,6 +552,7 @@
         err_already_registered: "Este correo electrónico ya está registrado.",
         err_invalid_credentials: "Correo o contraseña incorrectos.",
         err_signup_disabled: "El registro con correo electrónico está desactivado.",
+        err_password_required: "Por favor introduce tu contraseña.",
         err_password_too_short: "La contraseña debe tener al menos 6 caracteres.",
         err_verification_required: "Se requiere verificar la cuenta por correo electrónico.",
         err_db_save: "Error en la base de datos al guardar el usuario.",
@@ -650,6 +651,7 @@
         err_already_registered: "This email address is already registered.",
         err_invalid_credentials: "Incorrect email or password.",
         err_signup_disabled: "Email signup is disabled.",
+        err_password_required: "Please enter your password.",
         err_password_too_short: "Password must be at least 6 characters long.",
         err_verification_required: "Email verification is required.",
         err_db_save: "Database error saving user.",
@@ -1303,6 +1305,18 @@
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
           showToast(t('err_invalid_email'), 'error');
+          return;
+        }
+      }
+
+      // Validación de contraseña (excepto en forgot)
+      if (authMode !== 'forgot') {
+        if (!password) {
+          showToast(t('err_password_required'), 'error');
+          return;
+        }
+        if (password.length < 6) {
+          showToast(t('err_password_too_short'), 'error');
           return;
         }
       }
