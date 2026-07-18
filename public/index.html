@@ -368,6 +368,7 @@
     let allowCustomSlugs = true;
     let enableQrGeneration = true;
     let enableBackgroundImage = true;
+    let minPasswordLength = 6;
 
     // Listado de fondos de pantalla prémium (Unsplash CDN)
     const BACKGROUNDS = [
@@ -553,7 +554,7 @@
         err_invalid_credentials: "Correo o contraseña incorrectos.",
         err_signup_disabled: "El registro con correo electrónico está desactivado.",
         err_password_required: "Por favor introduce tu contraseña.",
-        err_password_too_short: "La contraseña debe tener al menos 6 caracteres.",
+        err_password_too_short: "La contraseña debe tener al menos {min} caracteres.",
         err_verification_required: "Se requiere verificar la cuenta por correo electrónico.",
         err_db_save: "Error en la base de datos al guardar el usuario.",
         err_email_required: "Por favor introduce tu correo electrónico.",
@@ -652,7 +653,7 @@
         err_invalid_credentials: "Incorrect email or password.",
         err_signup_disabled: "Email signup is disabled.",
         err_password_required: "Please enter your password.",
-        err_password_too_short: "Password must be at least 6 characters long.",
+        err_password_too_short: "Password must be at least {min} characters long.",
         err_verification_required: "Email verification is required.",
         err_db_save: "Database error saving user.",
         err_email_required: "Please enter your email address.",
@@ -1004,6 +1005,8 @@
         const configRes = await fetch('/api/config');
         const config = await configRes.json();
         
+        minPasswordLength = config.minPasswordLength || 6;
+        
         if (!config.supabaseUrl || !config.supabaseAnonKey) {
           throw new Error('Configuración de Supabase incompleta.');
         }
@@ -1315,8 +1318,9 @@
           showToast(t('err_password_required'), 'error');
           return;
         }
-        if (password.length < 6) {
-          showToast(t('err_password_too_short'), 'error');
+        // La longitud mínima solo se valida al registrarse o cambiar clave (no al iniciar sesión)
+        if ((authMode === 'signup' || authMode === 'reset-password') && password.length < minPasswordLength) {
+          showToast(t('err_password_too_short').replace('{min}', minPasswordLength), 'error');
           return;
         }
       }
