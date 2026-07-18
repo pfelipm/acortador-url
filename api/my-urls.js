@@ -33,7 +33,22 @@ export default async function handler(req, res) {
 
     if (error) throw error;
 
-    return res.status(200).json({ success: true, data });
+    // Obtener el límite máximo de URLs configurado
+    let maxUrls = 100;
+    try {
+      const { data: settings } = await supabase
+        .from('app_settings')
+        .select('max_urls_per_user')
+        .eq('id', 1)
+        .single();
+      if (settings && settings.max_urls_per_user) {
+        maxUrls = settings.max_urls_per_user;
+      }
+    } catch (err) {
+      console.error('Error al obtener max_urls_per_user en my-urls.js:', err);
+    }
+
+    return res.status(200).json({ success: true, data, maxUrls });
 
   } catch (error) {
     console.error('Error al obtener URLs del usuario:', error);

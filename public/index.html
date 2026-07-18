@@ -168,8 +168,11 @@
 
     <!-- CARD 2: Administración de Enlaces (Dashboard) -->
     <section id="card-manage" class="app-card hidden">
-      <div class="card-header">
-        <h2 id="dash-title-text">Enlaces temporales</h2>
+      <div class="card-header" style="flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <h2 id="dash-title-text">Enlaces temporales</h2>
+          <span id="dash-counter" class="dash-counter hidden"></span>
+        </div>
         <button id="refresh-links-btn" class="icon-action-btn" title="Actualizar lista">
           <i data-lucide="rotate-cw"></i>
         </button>
@@ -508,6 +511,7 @@
         dash_create_first: "Crear mi primer enlace",
         dash_search_empty: "No se encontraron enlaces que coincidan con la búsqueda.",
         dash_loading: "Cargando tus enlaces...",
+        dash_limit_usage: "Enlaces: {count} / {max}",
         modal_delete_title: "Eliminar enlace",
         modal_delete_confirm: "¿Estás seguro de que quieres eliminar el alias",
         modal_delete_warn: "Esta acción no se puede deshacer.",
@@ -577,6 +581,7 @@
         dash_create_first: "Create my first link",
         dash_search_empty: "No links matched your search.",
         dash_loading: "Loading your links...",
+        dash_limit_usage: "Links: {count} / {max}",
         modal_delete_title: "Delete link",
         modal_delete_confirm: "Are you sure you want to delete the alias",
         modal_delete_warn: "This action cannot be undone.",
@@ -659,6 +664,7 @@
     const refreshLinksBtn = document.getElementById('refresh-links-btn');
     const searchInput = document.getElementById('search-input');
     const toast = document.getElementById('toast');
+    const dashCounter = document.getElementById('dash-counter');
 
     // Elementos del DOM para QR
     const qrModal = document.getElementById('qr-modal');
@@ -1318,6 +1324,15 @@
             userUrls = result.data || [];
             searchInput.value = ''; // Limpiar buscador al refrescar
             filterAndRenderLinks();
+            
+            if (dashCounter) {
+              const max = result.maxUrls || 100;
+              const count = userUrls.length;
+              dashCounter.textContent = t('dash_limit_usage')
+                .replace('{count}', count)
+                .replace('{max}', max);
+              dashCounter.classList.remove('hidden');
+            }
           } else {
             linksListContainer.innerHTML = `<div class="error-state"><i data-lucide="alert-triangle"></i><p>${result.error}</p></div>`;
             lucide.createIcons();
@@ -1327,6 +1342,9 @@
           lucide.createIcons();
         }
       } else {
+        if (dashCounter) {
+          dashCounter.classList.add('hidden');
+        }
         // Cargar desde localStorage (invitado)
         try {
           const localData = localStorage.getItem('anon_links');
