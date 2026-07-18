@@ -529,6 +529,33 @@
         toast_qr_lib_error: "La librería de códigos QR no se ha cargado correctamente.",
         toast_reset_link_sent: "Enlace de recuperación enviado. Revisa tu correo.",
         toast_password_updated: "Contraseña actualizada correctamente.",
+        toast_delete_success: "Enlace eliminado correctamente.",
+        toast_conn_error: "Error al conectar con el servidor.",
+        toast_delete_local_success: "Enlace eliminado de tu navegador.",
+        toast_delete_error: "Error al eliminar enlace.",
+        toast_copy_error: "Error al copiar enlace.",
+        toast_copied_clipboard: "Enlace copiado al portapapeles.",
+        toast_copy_failed: "No se pudo copiar automáticamente.",
+        toast_passwords_mismatch: "Las contraseñas no coinciden. Por favor verifícalas.",
+        loading_logging_in: "Accediendo...",
+        loading_signing_up: "Creando cuenta...",
+        loading_sending: "Enviando enlace...",
+        loading_saving: "Guardando...",
+        auth_btn_login: "Entrar",
+        auth_btn_signup: "Registrarse",
+        link_expires_in: "Caduca en {days} días",
+        tooltip_clicks: "Total de clics",
+        tooltip_qr: "Ver código QR",
+        tooltip_copy: "Copiar enlace acortado",
+        tooltip_delete: "Eliminar enlace",
+        err_unexpected: "Ocurrió un error inesperado.",
+        err_already_registered: "Este correo electrónico ya está registrado.",
+        err_invalid_credentials: "Correo o contraseña incorrectos.",
+        err_signup_disabled: "El registro con correo electrónico está desactivado.",
+        err_password_too_short: "La contraseña debe tener al menos 6 caracteres.",
+        err_verification_required: "Se requiere verificar la cuenta por correo electrónico.",
+        err_db_save: "Error en la base de datos al guardar el usuario.",
+        err_invalid_email: "El formato del correo electrónico no es válido.",
         auth_forgot_link: "¿Olvidaste tu contraseña?",
         modal_forgot_title: "Recuperar contraseña",
         modal_reset_title: "Nueva contraseña",
@@ -599,6 +626,33 @@
         toast_qr_lib_error: "The QR code library was not loaded successfully.",
         toast_reset_link_sent: "Reset link sent. Please check your email.",
         toast_password_updated: "Password updated successfully.",
+        toast_delete_success: "Link successfully deleted.",
+        toast_conn_error: "Error connecting to the server.",
+        toast_delete_local_success: "Link removed from your browser.",
+        toast_delete_error: "Error deleting link.",
+        toast_copy_error: "Error copying link.",
+        toast_copied_clipboard: "Link copied to clipboard.",
+        toast_copy_failed: "Could not copy automatically.",
+        toast_passwords_mismatch: "Passwords do not match. Please verify them.",
+        loading_logging_in: "Logging in...",
+        loading_signing_up: "Creating account...",
+        loading_sending: "Sending link...",
+        loading_saving: "Saving...",
+        auth_btn_login: "Log in",
+        auth_btn_signup: "Sign up",
+        link_expires_in: "Expires in {days} days",
+        tooltip_clicks: "Total clicks",
+        tooltip_qr: "View QR code",
+        tooltip_copy: "Copy shortened link",
+        tooltip_delete: "Delete link",
+        err_unexpected: "An unexpected error occurred.",
+        err_already_registered: "This email address is already registered.",
+        err_invalid_credentials: "Incorrect email or password.",
+        err_signup_disabled: "Email signup is disabled.",
+        err_password_too_short: "Password must be at least 6 characters long.",
+        err_verification_required: "Email verification is required.",
+        err_db_save: "Database error saving user.",
+        err_invalid_email: "The email format is invalid.",
         auth_forgot_link: "Forgot your password?",
         modal_forgot_title: "Reset password",
         modal_reset_title: "New password",
@@ -685,21 +739,21 @@
 
     // Traducción de errores comunes de Supabase Auth
     const ERROR_TRANSLATIONS = {
-      "user already registered": "Este correo electrónico ya está registrado.",
-      "invalid login credentials": "Correo o contraseña incorrectos.",
-      "email signup is disabled": "El registro con correo electrónico está desactivado.",
-      "password should be at least 6 characters": "La contraseña debe tener al menos 6 caracteres.",
-      "signup requires verification": "Se requiere verificar la cuenta por correo electrónico.",
-      "database error saving user": "Error en la base de datos al guardar el usuario.",
-      "invalid email": "El formato del correo electrónico no es válido."
+      "user already registered": "err_already_registered",
+      "invalid login credentials": "err_invalid_credentials",
+      "email signup is disabled": "err_signup_disabled",
+      "password should be at least 6 characters": "err_password_too_short",
+      "signup requires verification": "err_verification_required",
+      "database error saving user": "err_db_save",
+      "invalid email": "err_invalid_email"
     };
 
     function getFriendlyErrorMessage(message) {
-      if (!message) return 'Ocurrió un error inesperado.';
+      if (!message) return t('err_unexpected');
       const lower = message.toLowerCase();
       for (const [key, val] of Object.entries(ERROR_TRANSLATIONS)) {
         if (lower.includes(key)) {
-          return val;
+          return t(val);
         }
       }
       return message;
@@ -1240,17 +1294,17 @@
 
       // Validación de contraseñas coincidentes para registro y reseteo
       if ((authMode === 'signup' || authMode === 'reset-password') && password !== confirmPassword) {
-        showToast(currentLang === 'en' ? 'Passwords do not match. Please verify them.' : 'Las contraseñas no coinciden. Por favor verifícalas.', 'error');
+        showToast(t('toast_passwords_mismatch'), 'error');
         return;
       }
       
       authSubmitBtn.disabled = true;
       authSubmitBtn.classList.add('loading');
       
-      let loadingText = 'Accediendo...';
-      if (authMode === 'signup') loadingText = 'Creando cuenta...';
-      else if (authMode === 'forgot') loadingText = 'Enviando enlace...';
-      else if (authMode === 'reset-password') loadingText = 'Guardando...';
+      let loadingText = t('loading_logging_in');
+      if (authMode === 'signup') loadingText = t('loading_signing_up');
+      else if (authMode === 'forgot') loadingText = t('loading_sending');
+      else if (authMode === 'reset-password') loadingText = t('loading_saving');
       authSubmitBtn.querySelector('span').textContent = loadingText;
 
       try {
@@ -1289,8 +1343,8 @@
         authSubmitBtn.disabled = false;
         authSubmitBtn.classList.remove('loading');
         
-        let btnText = 'Entrar';
-        if (authMode === 'signup') btnText = 'Registrarse';
+        let btnText = t('auth_btn_login');
+        if (authMode === 'signup') btnText = t('auth_btn_signup');
         else if (authMode === 'forgot') btnText = t('btn_send_reset_link');
         else if (authMode === 'reset-password') btnText = t('btn_save_password');
         authSubmitBtn.querySelector('span').textContent = btnText;
@@ -1394,15 +1448,15 @@
           linksListContainer.innerHTML = `
             <div class="empty-state">
               <i data-lucide="search-code"></i>
-              <p>No se encontraron enlaces que coincidan con la búsqueda.</p>
+              <p>${t('dash_search_empty')}</p>
             </div>
           `;
         } else {
           linksListContainer.innerHTML = `
             <div class="empty-state">
               <i data-lucide="link"></i>
-              <p>Aún no tienes enlaces creados.</p>
-              <button class="nav-btn primary-btn" onclick="switchTab('create')">Crear mi primer enlace</button>
+              <p>${t('dash_empty')}</p>
+              <button class="nav-btn primary-btn" onclick="switchTab('create')">${t('dash_create_first')}</button>
             </div>
           `;
         }
@@ -1422,10 +1476,12 @@
           const diffMs = expDate - new Date();
           const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
           dateInfo = `<span class="link-date exp-date" style="color: #f59e0b; display: inline-flex; align-items: center; gap: 4px;">
-            <i data-lucide="clock" style="width: 12px; height: 12px;"></i> Caduca en ${diffDays} días
+            <i data-lucide="clock" style="width: 12px; height: 12px;"></i> ${t('link_expires_in').replace('{days}', diffDays)}
           </span>`;
         } else {
-          const dateStr = new Date(url.created_at || url.createdAt).toLocaleDateString('es-ES', {
+          const activeLang = currentLang === 'auto' ? detectedLang : currentLang;
+          const locale = activeLang === 'en' ? 'en-US' : 'es-ES';
+          const dateStr = new Date(url.created_at || url.createdAt).toLocaleDateString(locale, {
             day: '2-digit',
             month: 'short',
             year: 'numeric'
@@ -1446,22 +1502,22 @@
             </div>
             
             <div class="link-actions">
-              <div class="link-clicks" title="Total de clics" style="${expiresAtVal ? 'display:none;' : ''}">
+              <div class="link-clicks" title="${t('tooltip_clicks')}" style="${expiresAtVal ? 'display:none;' : ''}">
                 <i data-lucide="bar-chart-2"></i>
                 <span>${url.clicks || 0}</span>
               </div>
               
               ${enableQrGeneration ? `
-              <button class="action-btn qr" onclick="openQRModal('${shortUrl}')" title="Ver código QR">
+              <button class="action-btn qr" onclick="openQRModal('${shortUrl}')" title="${t('tooltip_qr')}">
                 <i data-lucide="qr-code"></i>
               </button>
               ` : ''}
               
-              <button class="action-btn copy" onclick="copyToClipboardDirect('${shortUrl}')" title="Copiar enlace acortado">
+              <button class="action-btn copy" onclick="copyToClipboardDirect('${shortUrl}')" title="${t('tooltip_copy')}">
                 <i data-lucide="copy"></i>
               </button>
               
-              <button class="action-btn delete" onclick="deleteLink('${url.slug}')" title="Eliminar enlace">
+              <button class="action-btn delete" onclick="deleteLink('${url.slug}')" title="${t('tooltip_delete')}">
                 <i data-lucide="trash-2"></i>
               </button>
             </div>
@@ -1635,13 +1691,13 @@
           const result = await response.json();
 
           if (result.success) {
-            showToast('Enlace eliminado correctamente.', 'success');
+            showToast(t('toast_delete_success'), 'success');
             animateItemDeletion(slug);
           } else {
-            showToast(result.error || 'No se pudo eliminar el enlace.', 'error');
+            showToast(result.error || t('toast_delete_error'), 'error');
           }
         } catch (err) {
-          showToast('Error al conectar con el servidor.', 'error');
+          showToast(t('toast_conn_error'), 'error');
         }
       } else {
         // Borrar de localStorage (usuario invitado)
@@ -1650,10 +1706,10 @@
           const allLocal = localData ? JSON.parse(localData) : [];
           const updated = allLocal.filter(item => item.slug !== slug);
           localStorage.setItem('anon_links', JSON.stringify(updated));
-          showToast('Enlace eliminado de tu navegador.', 'success');
+          showToast(t('toast_delete_local_success'), 'success');
           animateItemDeletion(slug);
         } catch (err) {
-          showToast('Error al eliminar enlace.', 'error');
+          showToast(t('toast_delete_error'), 'error');
         }
       }
     });
@@ -1670,7 +1726,7 @@
     window.copyToClipboardDirect = function(text) {
       navigator.clipboard.writeText(text)
         .then(() => showToast(t('toast_copied'), 'success'))
-        .catch(() => showToast('Error al copiar enlace', 'error'));
+        .catch(() => showToast(t('toast_copy_error'), 'error'));
     };
 
     window.deleteLink = function(slug) {
@@ -1765,11 +1821,11 @@
 
           slugInput.value = '';
         } else {
-          showToast(result.error || 'Ocurrió un error inesperado.', 'error');
+          showToast(result.error || t('err_unexpected'), 'error');
         }
       } catch (err) {
         console.error(err);
-        showToast('Error de conexión con el servidor.', 'error');
+        showToast(t('toast_conn_error'), 'error');
       } finally {
         submitBtn.disabled = false;
         submitBtn.classList.remove('loading');
@@ -1784,22 +1840,22 @@
       
       navigator.clipboard.writeText(shortUrlOutput.value)
         .then(() => {
-          copyText.textContent = 'Copiado';
+          copyText.textContent = t('btn_copied');
           copyIcon.setAttribute('data-lucide', 'check');
           lucide.createIcons();
           copyBtn.classList.add('success');
 
-          showToast('Enlace copiado al portapapeles.', 'success');
+          showToast(t('toast_copied_clipboard'), 'success');
 
           setTimeout(() => {
-            copyText.textContent = 'Copiar';
+            copyText.textContent = t('btn_copy');
             copyIcon.setAttribute('data-lucide', 'copy');
             lucide.createIcons();
             copyBtn.classList.remove('success');
           }, 2000);
         })
         .catch(() => {
-          showToast('No se pudo copiar automáticamente.', 'error');
+          showToast(t('toast_copy_failed'), 'error');
         });
     });
 
