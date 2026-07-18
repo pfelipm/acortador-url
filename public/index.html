@@ -1108,13 +1108,19 @@
       authPassword.setAttribute('required', 'required');
       authConfirmPassword.removeAttribute('required');
       
-      // Resetear etiquetas por defecto
-      document.querySelector('#email-group label').textContent = currentLang === 'en' ? 'Email address' : 'Correo electrónico';
-      document.querySelector('#password-group label').innerHTML = `
-        <span id="auth-password-label">${currentLang === 'en' ? 'Password' : 'Contraseña'}</span>
-        <a href="#" id="forgot-password-link" style="font-size: 0.8rem; color: var(--primary); text-decoration: underline;">${t('auth_forgot_link')}</a>
-      `;
-      document.querySelector('#confirm-password-group label').textContent = currentLang === 'en' ? 'Confirm password' : 'Confirmar contraseña';
+      // Resetear etiquetas por defecto sin duplicar elementos
+      const emailLabel = document.getElementById('auth-email-label');
+      if (emailLabel) emailLabel.textContent = currentLang === 'en' ? 'Email address' : 'Correo electrónico';
+      
+      const passwordLabel = document.getElementById('auth-password-label');
+      if (passwordLabel) passwordLabel.textContent = currentLang === 'en' ? 'Password' : 'Contraseña';
+      
+      if (forgotPasswordLink) {
+        forgotPasswordLink.textContent = t('auth_forgot_link');
+      }
+      
+      const confirmPasswordLabel = document.querySelector('#confirm-password-group label');
+      if (confirmPasswordLabel) confirmPasswordLabel.textContent = currentLang === 'en' ? 'Confirm password' : 'Confirmar contraseña';
 
       // Re-vincular el evento del link de recuperación
       bindForgotPasswordLink();
