@@ -1,0 +1,16 @@
+{
+  "name": "at-pablofelip-online",
+  "version": "1.0.0",
+  "description": "Acortador de URLs en Vercel con Supabase",
+  "type": "module",
+  "main": "api/redirect.js",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.8",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "ws": "^8.21.1"
+  }
+}

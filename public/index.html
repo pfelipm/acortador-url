@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acortador de enlaces - at.pablofelip.online</title>
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase CDN Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- QRCode Client Generator (Localizado) -->
+  <script src="js/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="glass-bg"></div>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="header-top">
+        <div class="logo">
+          <i data-lucide="link-2"></i>
+          <span>pablofelip.online</span>
+        </div>
+        <div class="header-controls" style="display: flex; align-items: center; gap: 10px;">
+          <!-- Botón de ajustes -->
+          <div class="settings-dropdown-wrapper">
+            <button id="settings-toggle-btn" class="settings-toggle-btn" title="Configuración / Settings">
+              <i data-lucide="settings"></i>
+            </button>
+            <div id="settings-menu" class="settings-menu hidden">
+              <div class="settings-section">
+                <label data-i18n="settings_theme">Tema</label>
+                <div class="settings-options" id="theme-options">
+                  <button data-value="auto" class="active"><i data-lucide="monitor"></i><span data-i18n="theme_auto">Auto</span></button>
+                  <button data-value="light"><i data-lucide="sun"></i><span data-i18n="theme_light">Claro</span></button>
+                  <button data-value="dark"><i data-lucide="moon"></i><span data-i18n="theme_dark">Oscuro</span></button>
+                </div>
+              </div>
+              <div class="settings-section">
+                <label data-i18n="settings_lang">Idioma</label>
+                <div class="settings-options" id="lang-options">
+                  <button data-value="auto" class="active"><i data-lucide="languages"></i><span data-i18n="lang_auto">Auto</span></button>
+                  <button data-value="es"><span>🇪🇸 ES</span></button>
+                  <button data-value="en"><span>🇬🇧 EN</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="auth-nav" class="auth-nav">
+            <!-- Se rellenará dinámicamente con JS -->
+            <button id="nav-login-btn" class="nav-btn secondary-btn">
+              <i data-lucide="log-in"></i><span>Acceder</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="hero-section">
+        <h1 data-i18n="app_title">Acortador de enlaces</h1>
+        <p class="subtitle" data-i18n="app_subtitle">Genera URLs cortas, seguras y ultrarrápidas bajo el dominio at.pablofelip.online</p>
+      </div>
+
+      <!-- Pestañas de navegación -->
+      <div id="dashboard-tabs" class="dashboard-tabs">
+        <button id="tab-create" class="tab-btn active">
+          <i data-lucide="plus-circle"></i><span data-i18n="tab_shorten">Acortar</span>
+        </button>
+        <button id="tab-manage" class="tab-btn">
+          <i data-lucide="list"></i><span id="tab-manage-text" data-i18n="tab_manage_temp">Enlaces temporales</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- CARD 1: Creación de Enlaces (Acortador) -->
+    <main id="card-create" class="app-card">
+      <form id="shorten-form" class="shorten-form">
+        <div class="input-group">
+          <label for="url-input" data-i18n="dest_url_label">URL de destino (original)</label>
+          <div class="input-wrapper">
+            <i data-lucide="link" class="input-icon"></i>
+            <input 
+              type="url" 
+              id="url-input" 
+              placeholder="https://ejemplo.com/articulo-muy-largo-de-leer" 
+              required
+            >
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="label-with-hint">
+            <label for="slug-input" data-i18n="custom_alias_label">Alias personalizado (opcional)</label>
+            <span class="hint" data-i18n="custom_alias_hint">Letras, números, guiones</span>
+          </div>
+          <div class="input-wrapper prefix-wrapper">
+            <span class="domain-prefix">at.pablofelip.online/</span>
+            <input 
+              type="text" 
+              id="slug-input" 
+              placeholder="mi-enlace"
+              pattern="^[a-zA-Z0-9_-]+$"
+              title="Solo letras, números, guiones y guiones bajos"
+            >
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="label-with-hint">
+            <label for="expiry-select" data-i18n="expiry_label">Duración del enlace</label>
+            <span id="expiry-hint" class="hint" data-i18n="expiry_hint_register">Regístrate para cambiarlo</span>
+          </div>
+          <div class="input-wrapper">
+            <i data-lucide="clock" class="input-icon"></i>
+            <select id="expiry-select" class="select-input" disabled>
+              <option value="30d" data-i18n="opt_30d" selected>30 días (Temporal)</option>
+              <option value="24h" data-i18n="opt_24h">24 horas</option>
+              <option value="7d" data-i18n="opt_7d">7 días</option>
+              <option value="3m" data-i18n="opt_3m">3 meses</option>
+              <option value="1y" data-i18n="opt_1y">1 año</option>
+              <option value="never" data-i18n="opt_never">Indefinido (No expira)</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="submit-btn">
+          <span data-i18n="btn_shorten">Acortar enlace</span>
+          <i data-lucide="sparkles"></i>
+        </button>
+      </form>
+
+      <!-- Panel de Resultado (Oculto al inicio) -->
+      <div id="result-panel" class="result-panel hidden">
+        <h3 data-i18n="result_ready">Tu enlace está listo</h3>
+        <div class="result-box">
+          <input type="text" id="short-url-output" readonly>
+          <button id="copy-btn" class="copy-btn" title="Copiar enlace">
+            <i data-lucide="copy" id="copy-icon"></i>
+            <span id="copy-text" data-i18n="btn_copy">Copiar</span>
+          </button>
+        </div>
+        <div id="anonymous-warning" class="anonymous-warning hidden">
+          <i data-lucide="alert-circle"></i>
+          <span>Este enlace es temporal y caducará en 30 días. <a href="#" id="warning-login-link">Inicia sesión o regístrate</a> para conservarlo para siempre.</span>
+        </div>
+        <!-- Código QR -->
+        <div id="result-qr-container" class="result-qr-container hidden" style="display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 15px 0;">
+          <canvas id="result-qr-canvas" style="background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></canvas>
+          <button id="project-qr-btn" class="nav-btn secondary-btn" style="padding: 6px 14px;">
+            <i data-lucide="maximize-2"></i>
+            <span data-i18n="btn_project">Proyectar</span>
+          </button>
+        </div>
+
+        <div class="stats-hint">
+          <i data-lucide="info"></i>
+          <span data-i18n="result_hint">El enlace redirigirá inmediatamente con previsualización habilitada.</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- CARD 2: Administración de Enlaces (Dashboard) -->
+    <section id="card-manage" class="app-card hidden">
+      <div class="card-header">
+        <h2 id="dash-title-text">Enlaces temporales</h2>
+        <button id="refresh-links-btn" class="icon-action-btn" title="Actualizar lista">
+          <i data-lucide="rotate-cw"></i>
+        </button>
+      </div>
+
+      <!-- Nota informativa sobre almacenamiento local para invitados -->
+      <div id="guest-info-notice" class="guest-info-notice hidden">
+        <i data-lucide="info"></i>
+        <span>Estos enlaces son temporales y se guardan únicamente en este navegador (localStorage) durante 30 días. <a href="#" class="notice-link" id="notice-login-link">Accede o regístrate</a> para conservarlos para siempre.</span>
+      </div>
+
+      <!-- Buscador de Enlaces -->
+      <div class="search-bar-wrapper">
+        <i data-lucide="search" class="search-icon"></i>
+        <input 
+          type="text" 
+          id="search-input" 
+          placeholder="Buscar por slug o URL de destino..."
+          autocomplete="off"
+        >
+      </div>
+
+      <div id="links-list-container" class="links-list-container">
+        <!-- Rellenado dinámico con JavaScript -->
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Cargando tus enlaces...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODAL: Autenticación (Login / Registro) -->
+    <div id="auth-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 id="modal-title">Iniciar sesión</h2>
+          <button id="close-modal-btn" class="close-btn">&times;</button>
+        </div>
+        
+        <form id="auth-form" class="auth-form">
+          <div class="input-group">
+            <label for="auth-email">Correo electrónico</label>
+            <div class="input-wrapper">
+              <i data-lucide="mail" class="input-icon"></i>
+              <input type="email" id="auth-email" required placeholder="tu@email.com">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="auth-password">Contraseña</label>
+            <div class="input-wrapper">
+              <i data-lucide="lock" class="input-icon"></i>
+              <input type="password" id="auth-password" required placeholder="••••••••" minlength="6">
+            </div>
+          </div>
+
+          <div class="input-group id-confirm-group hidden" id="confirm-password-group">
+            <label for="auth-confirm-password">Confirmar contraseña</label>
+            <div class="input-wrapper">
+              <i data-lucide="lock" class="input-icon"></i>
+              <input type="password" id="auth-confirm-password" placeholder="••••••••" minlength="6">
+            </div>
+          </div>
+
+          <button type="submit" id="auth-submit-btn" class="submit-btn">
+            <span>Entrar</span>
+            <i data-lucide="log-in"></i>
+          </button>
+        </form>
+
+        <div class="modal-footer">
+          <p id="auth-switch-text">¿No tienes cuenta? <a href="#" id="auth-switch-link">Regístrate gratis</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: Confirmación de Eliminación -->
+    <div id="confirm-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>Eliminar enlace</h2>
+          <button id="close-confirm-modal-btn" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body" style="margin: 10px 0; font-size: 0.95rem; line-height: 1.5; color: #d1d5db;">
+          <p>¿Estás seguro de que quieres eliminar el alias <strong id="confirm-slug-text" style="color: #ef4444;"></strong>? Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">
+          <button id="cancel-delete-btn" class="nav-btn secondary-btn" style="padding: 10px 18px;">Cancelar</button>
+          <button id="confirm-delete-btn" class="submit-btn" style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); padding: 10px 18px;">
+            <span>Eliminar</span>
+            <i data-lucide="trash-2"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- MODAL: Visor de QR (Dashboard) -->
+    <div id="qr-modal" class="modal-overlay hidden">
+      <div class="modal-card qr-modal-card">
+        <div class="modal-header">
+          <h2 data-i18n="modal_qr_title">Código QR</h2>
+          <button id="close-qr-modal-btn" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 16px; margin: 15px 0;">
+          <canvas id="modal-qr-canvas" style="background: white; padding: 12px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></canvas>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem; text-align: center; color: var(--text-muted); word-break: break-all; width: 100%;">
+            <span id="modal-qr-url-text"></span>
+            <button id="modal-qr-copy-btn" class="secondary-btn" style="padding: 4px 8px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid var(--border-color);" title="Copiar enlace">
+              <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: center; gap: 12px; margin-top: 10px;">
+          <button id="modal-project-qr-btn" class="submit-btn" style="padding: 10px 18px;">
+            <i data-lucide="maximize-2"></i>
+            <span data-i18n="btn_project">Proyectar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERLAY: Proyección de QR a Pantalla Completa -->
+    <div id="qr-projection-overlay" class="projection-overlay hidden">
+      <button id="close-projection-btn" class="close-projection-btn">&times;</button>
+      <div class="projection-content">
+        <canvas id="projection-qr-canvas"></canvas>
+        <div id="projection-url-text" class="projection-url-text"></div>
+      </div>
+    </div>
+
+    <!-- MODAL: Atribución (Acerca de) -->
+    <div id="about-modal" class="modal-overlay hidden">
+      <div class="modal-card about-card" style="max-width: 680px; width: 90%; position: relative;">
+        <button id="close-about-modal-btn" class="close-btn" style="position: absolute; top: 20px; right: 20px; font-size: 1.5rem;">&times;</button>
+        
+        <div class="about-header" style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <div class="about-icon-wrapper" style="background: rgba(99, 102, 241, 0.15); color: var(--primary); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="info" style="width: 24px; height: 24px;"></i>
+          </div>
+          <div>
+            <h2 style="font-size: 1.8rem; font-weight: 700; margin: 0; color: var(--text-main);">at.pablofelip.online</h2>
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;" data-i18n="about_date">Actualizado: 18 de julio de 2026</span>
+          </div>
+        </div>
+
+        <div class="about-body-layout">
+          <div class="about-text" style="flex: 1; font-size: 0.95rem; line-height: 1.6; color: var(--text-muted); display: flex; flex-direction: column; gap: 16px;">
+            <p data-i18n="about_p1"><strong>at.pablofelip.online</strong> es una herramienta <em>experimental y algo gamberra</em> que surge durante la sobremesa del segundo día de la reunión anual de <strong><a href="https://transformacioneducativa.es/" target="_blank" style="color: var(--primary); text-decoration: underline;">GEG Spain</a></strong> 🎓.</p>
+            <p data-i18n="about_p2">Esta app nació en un momento de inspiración colectiva (o de paciencia infinita), mientras le daba una buena turra a mis sufridos compañeros del <strong><a href="https://transformacioneducativa.es/somos/" target="_blank" style="color: var(--primary); text-decoration: underline;">equipo</a></strong> (a quienes tanto debo) debatiendo sobre los límites de las webapps en Google Apps Script y cuándo no queda más remedio que dar el salto a entornos robustos como Vercel y Supabase.</p>
+            <p data-i18n="about_p3">Creado con cariño, respeto y mucha eficiencia por <strong><a href="https://pablofelip.online/sobre-mi/" target="_blank" style="color: var(--primary); text-decoration: underline;">Pablo Felip Monferrer</a></strong> y distribuido bajo licencia libre.</p>
+          </div>
+          <div class="about-avatar-wrapper" style="flex-shrink: 0;">
+            <img src="https://drive.google.com/thumbnail?id=1pbNyTrnZeZvfWLu2Lm66f9tVQ3OqTKHx&sz=w500-h500" alt="Pablo Felip Monferrer" style="width: 140px; height: 140px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 20px rgba(0,0,0,0.3); object-fit: cover;">
+          </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0 16px;">
+
+        <div class="about-footer" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-muted);">
+          <span>&copy; 2026 Pablo Felip</span>
+          <div style="display: flex; gap: 16px;">
+            <a href="https://github.com/pfelipm/acortador-url" target="_blank" style="display: flex; align-items: center; gap: 6px; color: var(--text-muted); transition: color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">
+              <i data-lucide="github" style="width: 16px; height: 16px;"></i> GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/pfelipm/" target="_blank" style="display: flex; align-items: center; gap: 6px; color: var(--text-muted); transition: color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">
+              <i data-lucide="linkedin" style="width: 16px; height: 16px;"></i> LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atribución de imagen de fondo -->
+    <div id="bg-attribution" class="bg-attribution hidden"></div>
+
+    <!-- Notificaciones/Feedback -->
+    <div id="toast" class="toast hidden"></div>
+
+    <footer class="app-footer">
+      <p data-i18n="footer_text">&copy; 2026 <a href="#" id="about-trigger" style="text-decoration: underline; color: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">pablofelip.online <i data-lucide="info" style="width: 14px; height: 14px; margin-top: 1px;"></i></a>. Desarrollado sobre la infraestructura Edge de Vercel y Supabase.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Variables globales
+    let supabaseClient = null;
+    let authMode = 'login'; // 'login' o 'signup'
+    let currentUser = null;
+    let userUrls = []; // Almacenará la lista cargada de URLs para filtrado en local
+    let allowUserRegistration = true;
+    let allowCustomSlugs = true;
+    let enableQrGeneration = true;
+    let enableBackgroundImage = true;
+
+    // Listado de fondos de pantalla prémium (Unsplash CDN)
+    const BACKGROUNDS = [
+      { url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1920&q=80", author: "Milad Fakurian", profile: "https://unsplash.com/@fakurian" },
+      { url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80", author: "Anneliese Phillips", profile: "https://unsplash.com/@anneliesephillips" },
+      { url: "https://images.unsplash.com/photo-1531315630201-bb15abeb1653?auto=format&fit=crop&w=1920&q=80", author: "Dan Cristian Pădureț", profile: "https://unsplash.com/@dancristianpaduret" },
+      { url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80", author: "Kalen Emsley", profile: "https://unsplash.com/@kalenemsley" },
+      { url: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1920&q=80", author: "Joel Filipe", profile: "https://unsplash.com/@joelfilipe" },
+      { url: "https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?auto=format&fit=crop&w=1920&q=80", author: "Alexander Andrews", profile: "https://unsplash.com/@alex_andrews" },
+      { url: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1920&q=80", author: "Pawel Czerwinski", profile: "https://unsplash.com/@pawel_czerwinski" },
+      { url: "https://images.unsplash.com/photo-1618005198143-e5283b519a7f?auto=format&fit=crop&w=1920&q=80", author: "Milad Fakurian", profile: "https://unsplash.com/@fakurian" },
+      { url: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1920&q=80", author: "Joel Filipe", profile: "https://unsplash.com/@joelfilipe" },
+      { url: "https://images.unsplash.com/photo-1509316975850-ff9c5edd0cd9?auto=format&fit=crop&w=1920&q=80", author: "Wolfgang Hasselmann", profile: "https://unsplash.com/@wolfgang_hasselmann" },
+      { url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80", author: "Sebastian Unrau", profile: "https://unsplash.com/@sebastianunrau" },
+      { url: "https://images.unsplash.com/photo-1504893524553-ac55fce698be?auto=format&fit=crop&w=1920&q=80", author: "Dan Otis", profile: "https://unsplash.com/@danotis" },
+      { url: "https://images.unsplash.com/photo-1538370965046-79c0d6907d47?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1920&q=80", author: "Ishan @seefromthesky", profile: "https://unsplash.com/@seefromthesky" },
+      { url: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=1920&q=80", author: "Google DeepMind", profile: "https://unsplash.com/@googledeepmind" },
+      { url: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1920&q=80", author: "Google DeepMind", profile: "https://unsplash.com/@googledeepmind" },
+      { url: "https://images.unsplash.com/photo-1517022812141-23620dba5c23?auto=format&fit=crop&w=1920&q=80", author: "Annie Spratt", profile: "https://unsplash.com/@anniespratt" },
+      { url: "https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&w=1920&q=80", author: "Qingbao Meng", profile: "https://unsplash.com/@qingbao" },
+      { url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1920&q=80", author: "Google DeepMind", profile: "https://unsplash.com/@googledeepmind" },
+      { url: "https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&w=1920&q=80", author: "Dan Cristian Pădureț", profile: "https://unsplash.com/@dancristianpaduret" },
+      { url: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?auto=format&fit=crop&w=1920&q=80", author: "Daniel Olah", profile: "https://unsplash.com/@danielolah" },
+      { url: "https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=1920&q=80", author: "Dan Cristian Pădureț", profile: "https://unsplash.com/@dancristianpaduret" },
+      { url: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1484591974057-265bb767f726?auto=format&fit=crop&w=1920&q=80", author: "Joshua Earle", profile: "https://unsplash.com/@joshuaearle" },
+      { url: "https://images.unsplash.com/photo-1472214222541-d510753a4907?auto=format&fit=crop&w=1920&q=80", author: "Qingbao Meng", profile: "https://unsplash.com/@qingbao" },
+      { url: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1920&q=80", author: "Bailey Zindel", profile: "https://unsplash.com/@baileyzindel" },
+      { url: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80", author: "v2osk", profile: "https://unsplash.com/@v2osk" },
+      { url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&q=80", author: "Sebastian Unrau", profile: "https://unsplash.com/@sebastianunrau" },
+      { url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1920&q=80", author: "Luca Bravo", profile: "https://unsplash.com/@lucabravo" },
+      { url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80", author: "Sean Oulashin", profile: "https://unsplash.com/@oulashin" },
+      { url: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=1920&q=80", author: "Nathan Anderson", profile: "https://unsplash.com/@nathananderson" },
+      { url: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=1920&q=80", author: "John Towner", profile: "https://unsplash.com/@johntowner" },
+      { url: "https://images.unsplash.com/photo-1433832597026-63a5d085967f?auto=format&fit=crop&w=1920&q=80", author: "Kace Rodriguez", profile: "https://unsplash.com/@kacerodriguez" },
+      { url: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1920&q=80", author: "Veeterzy", profile: "https://unsplash.com/@veeterzy" },
+      { url: "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&w=1920&q=80", author: "Dan Cristian Pădureț", profile: "https://unsplash.com/@dancristianpaduret" },
+      { url: "https://images.unsplash.com/photo-1618005198143-e5283b519a7f?auto=format&fit=crop&w=1920&q=80", author: "Milad Fakurian", profile: "https://unsplash.com/@fakurian" },
+      { url: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&q=80", author: "Emma Frances Logan", profile: "https://unsplash.com/@emmafranceslogan" },
+      { url: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=1920&q=80", author: "Kalen Emsley", profile: "https://unsplash.com/@kalenemsley" },
+      { url: "https://images.unsplash.com/photo-1510784722466-f2aa9c52fff6?auto=format&fit=crop&w=1920&q=80", author: "Nathan Dumlao", profile: "https://unsplash.com/@nate_dumlao" },
+      { url: "https://images.unsplash.com/photo-1509043759401-164b1d235973?auto=format&fit=crop&w=1920&q=80", author: "Aaron Burden", profile: "https://unsplash.com/@aaronburden" },
+      { url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1920&q=80", author: "Roberto Nickson", profile: "https://unsplash.com/@roberto_nickson" },
+      { url: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1920&q=80", author: "David Marcu", profile: "https://unsplash.com/@davidmarcu" },
+      { url: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1920&q=80", author: "Johannes Plenio", profile: "https://unsplash.com/@johannesplenio" },
+      { url: "https://images.unsplash.com/photo-1502759683299-cdcd6974244f?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?auto=format&fit=crop&w=1920&q=80", author: "Luca Bravo", profile: "https://unsplash.com/@lucabravo" },
+      { url: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=1920&q=80", author: "David Marcu", profile: "https://unsplash.com/@davidmarcu" },
+      { url: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1920&q=80", author: "v2osk", profile: "https://unsplash.com/@v2osk" },
+      { url: "https://images.unsplash.com/photo-1475113548554-5a36f1f523d6?auto=format&fit=crop&w=1920&q=80", author: "Vincent Ledvina", profile: "https://unsplash.com/@vincentledvina" },
+      { url: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&w=1920&q=80", author: "Juskteez Vu", profile: "https://unsplash.com/@juskteez" },
+      { url: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1920&q=80", author: "Luca Bravo", profile: "https://unsplash.com/@lucabravo" },
+      { url: "https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1920&q=80", author: "Sebastian Unrau", profile: "https://unsplash.com/@sebastianunrau" },
+      { url: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=1920&q=80", author: "v2osk", profile: "https://unsplash.com/@v2osk" },
+      { url: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1920&q=80", author: "Qingbao Meng", profile: "https://unsplash.com/@qingbao" },
+      { url: "https://images.unsplash.com/photo-1518098268026-4e66f1a9c869?auto=format&fit=crop&w=1920&q=80", author: "v2osk", profile: "https://unsplash.com/@v2osk" },
+      { url: "https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?auto=format&fit=crop&w=1920&q=80", author: "Bailey Zindel", profile: "https://unsplash.com/@baileyzindel" },
+      { url: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?auto=format&fit=crop&w=1920&q=80", author: "Johannes Plenio", profile: "https://unsplash.com/@johannesplenio" },
+      { url: "https://images.unsplash.com/photo-1520113548215-4b30d30d3e9f?auto=format&fit=crop&w=1920&q=80", author: "Juskteez Vu", profile: "https://unsplash.com/@juskteez" },
+      { url: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=1920&q=80", author: "Alessandro Erbetta", profile: "https://unsplash.com/@alessandro_erbetta" },
+      { url: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80", author: "Alexandre Debiève", profile: "https://unsplash.com/@alexandre_debieve" },
+      { url: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1920&q=80", author: "Markus Spiske", profile: "https://unsplash.com/@markusspiske" },
+      { url: "https://images.unsplash.com/photo-1480506132288-68f7705954bd?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1505506874110-6a7a69069a08?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&w=1920&q=80", author: "Vincent Ledvina", profile: "https://unsplash.com/@vincentledvina" },
+      { url: "https://images.unsplash.com/photo-1518818402646-74f8831c3b3b?auto=format&fit=crop&w=1920&q=80", author: "Juskteez Vu", profile: "https://unsplash.com/@juskteez" },
+      { url: "https://images.unsplash.com/photo-1516339901601-2e1d62dc0c45?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1496016013753-b90201880c43?auto=format&fit=crop&w=1920&q=80", author: "Qingbao Meng", profile: "https://unsplash.com/@qingbao" },
+      { url: "https://images.unsplash.com/photo-1543722530-d2c32013a1e6?auto=format&fit=crop&w=1920&q=80", author: "National Cancer Institute", profile: "https://unsplash.com/@nci" },
+      { url: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=1920&q=80", author: "National Cancer Institute", profile: "https://unsplash.com/@nci" },
+      { url: "https://images.unsplash.com/photo-1532187643603-ba119ca4109e?auto=format&fit=crop&w=1920&q=80", author: "National Cancer Institute", profile: "https://unsplash.com/@nci" },
+      { url: "https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1920&q=80", author: "Luca Bravo", profile: "https://unsplash.com/@lucabravo" },
+      { url: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1920&q=80", author: "Markus Spiske", profile: "https://unsplash.com/@markusspiske" },
+      { url: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=1920&q=80", author: "Markus Spiske", profile: "https://unsplash.com/@markusspiske" },
+      { url: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1920&q=80", author: "Luca Bravo", profile: "https://unsplash.com/@lucabravo" },
+      { url: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1920&q=80", author: "Luca Bravo", profile: "https://unsplash.com/@lucabravo" },
+      { url: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1920&q=80", author: "Markus Spiske", profile: "https://unsplash.com/@markusspiske" },
+      { url: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=1920&q=80", author: "Florian Olivo", profile: "https://unsplash.com/@florianolivo" },
+      { url: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1920&q=80", author: "Clément Hélardot", profile: "https://unsplash.com/@clemunoe" },
+      { url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1920&q=80", author: "Pawel Czerwinski", profile: "https://unsplash.com/@pawel_czerwinski" },
+      { url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1445905595283-21f82c66b1c8?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1454789548928-9efd52dc4031?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" },
+      { url: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?auto=format&fit=crop&w=1920&q=80", author: "NASA", profile: "https://unsplash.com/@nasa" }
+    ];
+
+    // Estado del Tema y el Idioma
+    let currentTheme = 'auto'; // 'auto', 'light', 'dark'
+    let currentLang = 'auto'; // 'auto', 'es', 'en'
+    let detectedLang = 'es';
+    let currentBackground = null;
+
+    // Diccionario de traducciones (i18n)
+    const TRANSLATIONS = {
+      es: {
+        app_title: "Acortador de enlaces",
+        app_subtitle: "Genera URLs cortas, seguras y ultrarrápidas bajo el dominio at.pablofelip.online",
+        tab_shorten: "Acortar",
+        tab_manage_temp: "Enlaces temporales",
+        tab_manage_user: "Mis enlaces",
+        dest_url_label: "URL de destino (original)",
+        custom_alias_label: "Alias personalizado (opcional)",
+        custom_alias_hint: "Letras, números, guiones",
+        expiry_label: "Duración del enlace",
+        expiry_hint_register: "Regístrate para cambiarlo",
+        expiry_hint_select: "Elige cuándo caducará el enlace",
+        opt_30d: "30 días (Temporal)",
+        opt_24h: "24 horas",
+        opt_7d: "7 días",
+        opt_3m: "3 meses",
+        opt_1y: "1 año",
+        opt_never: "Indefinido (No expira)",
+        btn_shorten: "Acortar enlace",
+        btn_generating: "Generando...",
+        result_ready: "Tu enlace está listo",
+        btn_copy: "Copiar",
+        btn_copied: "Copiado",
+        result_hint: "El enlace redirigirá inmediatamente con previsualización habilitada.",
+        settings_theme: "Tema",
+        theme_auto: "Auto",
+        theme_light: "Claro",
+        theme_dark: "Oscuro",
+        settings_lang: "Idioma",
+        lang_auto: "Auto",
+        search_placeholder: "Buscar por slug o URL de destino...",
+        dash_title_user: "Mis enlaces guardados",
+        dash_title_temp: "Enlaces temporales",
+        dash_empty: "Aún no tienes enlaces creados.",
+        dash_create_first: "Crear mi primer enlace",
+        dash_search_empty: "No se encontraron enlaces que coincidan con la búsqueda.",
+        dash_loading: "Cargando tus enlaces...",
+        modal_delete_title: "Eliminar enlace",
+        modal_delete_confirm: "¿Estás seguro de que quieres eliminar el alias",
+        modal_delete_warn: "Esta acción no se puede deshacer.",
+        modal_cancel: "Cancelar",
+        modal_delete: "Eliminar",
+        modal_qr_title: "Código QR",
+        btn_project: "Proyectar",
+        // Toast alerts
+        toast_shorten_success: "Enlace acortado con éxito.",
+        toast_copied: "Enlace copiado.",
+        toast_login_welcome: "Bienvenido de nuevo.",
+        toast_signup_success: "Cuenta creada con éxito.",
+        toast_logout_success: "Sesión cerrada correctamente.",
+        toast_qr_lib_error: "La librería de códigos QR no se ha cargado correctamente.",
+        about_date: "Actualizado: 18 de julio de 2026",
+        about_p1: "<strong>at.pablofelip.online</strong> es una herramienta <em>experimental y algo gamberra</em> que surge durante la sobremesa del segundo día de la reunión anual de <strong><a href='https://transformacioneducativa.es/' target='_blank' style='color: var(--primary); text-decoration: underline;'>GEG Spain</a></strong> 🎓.",
+        about_p2: "Esta app nació en un momento de inspiración colectiva (o de paciencia infinita), mientras le daba una buena turra a mis sufridos compañeros del <strong><a href='https://transformacioneducativa.es/somos/' target='_blank' style='color: var(--primary); text-decoration: underline;'>equipo</a></strong> (a quienes tanto debo) debatiendo sobre los límites de las webapps en Google Apps Script y cuándo no queda más remedio que dar el salto a entornos robustos como Vercel y Supabase.",
+        about_p3: "Creado con cariño, respeto y mucha eficiencia por <strong><a href='https://pablofelip.online/sobre-mi/' target='_blank' style='color: var(--primary); text-decoration: underline;'>Pablo Felip Monferrer</a></strong> y distribuido bajo licencia libre.",
+        footer_text: "&copy; 2026 <a href='#' id='about-trigger' style='text-decoration: underline; color: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;'>pablofelip.online <i data-lucide='info' style='width: 14px; height: 14px; margin-top: 1px;'></i></a>. Desarrollado sobre la infraestructura Edge de Vercel y Supabase."
+      },
+      en: {
+        app_title: "URL Shortener",
+        app_subtitle: "Generate short, secure, and ultra-fast URLs under the domain at.pablofelip.online",
+        tab_shorten: "Shorten",
+        tab_manage_temp: "Temporary links",
+        tab_manage_user: "My links",
+        dest_url_label: "Destination URL (original)",
+        custom_alias_label: "Custom alias (optional)",
+        custom_alias_hint: "Letters, numbers, hyphens",
+        expiry_label: "Link duration",
+        expiry_hint_register: "Sign up to change it",
+        expiry_hint_select: "Choose when the link will expire",
+        opt_30d: "30 days (Temporary)",
+        opt_24h: "24 hours",
+        opt_7d: "7 days",
+        opt_3m: "3 months",
+        opt_1y: "1 year",
+        opt_never: "Indefinite (No expiry)",
+        btn_shorten: "Shorten link",
+        btn_generating: "Generating...",
+        result_ready: "Your link is ready",
+        btn_copy: "Copy",
+        btn_copied: "Copied",
+        result_hint: "The link will redirect immediately with preview enabled.",
+        settings_theme: "Theme",
+        theme_auto: "Auto",
+        theme_light: "Light",
+        theme_dark: "Dark",
+        settings_lang: "Language",
+        lang_auto: "Auto",
+        search_placeholder: "Search by slug or destination URL...",
+        dash_title_user: "My saved links",
+        dash_title_temp: "Temporary links",
+        dash_empty: "You haven't created any links yet.",
+        dash_create_first: "Create my first link",
+        dash_search_empty: "No links matched your search.",
+        dash_loading: "Loading your links...",
+        modal_delete_title: "Delete link",
+        modal_delete_confirm: "Are you sure you want to delete the alias",
+        modal_delete_warn: "This action cannot be undone.",
+        modal_cancel: "Cancel",
+        modal_delete: "Delete",
+        modal_qr_title: "QR Code",
+        btn_project: "Project",
+        // Toast alerts
+        toast_shorten_success: "Link successfully shortened.",
+        toast_copied: "Link copied.",
+        toast_login_welcome: "Welcome back.",
+        toast_signup_success: "Account created successfully.",
+        toast_logout_success: "Logged out successfully.",
+        toast_qr_lib_error: "The QR code library was not loaded successfully.",
+        about_date: "Updated: July 18, 2026",
+        about_p1: "<strong>at.pablofelip.online</strong> is an <em>experimental and slightly mischievous</em> tool that emerged during dinner on the second day of the annual meeting of <strong><a href='https://transformacioneducativa.es/' target='_blank' style='color: var(--primary); text-decoration: underline;'>GEG Spain</a></strong> 🎓.",
+        about_p2: "This app was born in a moment of collective inspiration (or infinite patience), while giving a good earful to my long-suffering teammates (to whom I owe so much) debating the limits of webapps in Google Apps Script and when there is no choice but to leap to robust environments like Vercel and Supabase.",
+        about_p3: "Created with love, respect, and high efficiency by <strong><a href='https://pablofelip.online/sobre-mi/' target='_blank' style='color: var(--primary); text-decoration: underline;'>Pablo Felip Monferrer</a></strong> and distributed under a free license.",
+        footer_text: "&copy; 2026 <a href='#' id='about-trigger' style='text-decoration: underline; color: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;'>pablofelip.online <i data-lucide='info' style='width: 14px; height: 14px; margin-top: 1px;'></i></a>. Developed on Vercel Edge infrastructure & Supabase."
+      }
+    };
+
+    function t(key) {
+      const activeLang = currentLang === 'auto' ? detectedLang : currentLang;
+      return TRANSLATIONS[activeLang]?.[key] || TRANSLATIONS['es'][key] || key;
+    }
+
+    // Elementos del DOM
+    const settingsToggleBtn = document.getElementById('settings-toggle-btn');
+    const settingsMenu = document.getElementById('settings-menu');
+    const authNav = document.getElementById('auth-nav');
+    const dashboardTabs = document.getElementById('dashboard-tabs');
+    const tabCreate = document.getElementById('tab-create');
+    const tabManage = document.getElementById('tab-manage');
+    const tabManageText = document.getElementById('tab-manage-text');
+    
+    const cardCreate = document.getElementById('card-create');
+    const cardManage = document.getElementById('card-manage');
+    
+    const shortenForm = document.getElementById('shorten-form');
+    const urlInput = document.getElementById('url-input');
+    const slugInput = document.getElementById('slug-input');
+    const expirySelect = document.getElementById('expiry-select');
+    const expiryHint = document.getElementById('expiry-hint');
+    const submitBtn = document.getElementById('submit-btn');
+    const resultPanel = document.getElementById('result-panel');
+    const shortUrlOutput = document.getElementById('short-url-output');
+    
+    const copyBtn = document.getElementById('copy-btn');
+    const copyIcon = document.getElementById('copy-icon');
+    const copyText = document.getElementById('copy-text');
+    
+    const authModal = document.getElementById('auth-modal');
+    const authForm = document.getElementById('auth-form');
+    const authEmail = document.getElementById('auth-email');
+    const authPassword = document.getElementById('auth-password');
+    const authConfirmPassword = document.getElementById('auth-confirm-password');
+    const confirmPasswordGroup = document.getElementById('confirm-password-group');
+    const authSubmitBtn = document.getElementById('auth-submit-btn');
+    const modalTitle = document.getElementById('modal-title');
+    const authSwitchLink = document.getElementById('auth-switch-link');
+    const authSwitchText = document.getElementById('auth-switch-text');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    
+    const linksListContainer = document.getElementById('links-list-container');
+    const refreshLinksBtn = document.getElementById('refresh-links-btn');
+    const searchInput = document.getElementById('search-input');
+    const toast = document.getElementById('toast');
+
+    // Elementos del DOM para QR
+    const qrModal = document.getElementById('qr-modal');
+    const closeQrModalBtn = document.getElementById('close-qr-modal-btn');
+    const modalQrCanvas = document.getElementById('modal-qr-canvas');
+    const modalQrUrlText = document.getElementById('modal-qr-url-text');
+    const modalQrCopyBtn = document.getElementById('modal-qr-copy-btn');
+    const modalProjectQrBtn = document.getElementById('modal-project-qr-btn');
+    
+    const qrProjectionOverlay = document.getElementById('qr-projection-overlay');
+    const closeProjectionBtn = document.getElementById('close-projection-btn');
+    const projectionQrCanvas = document.getElementById('projection-qr-canvas');
+    const projectionUrlText = document.getElementById('projection-url-text');
+    
+    const resultQrContainer = document.getElementById('result-qr-container');
+    const resultQrCanvas = document.getElementById('result-qr-canvas');
+    const projectQrBtn = document.getElementById('project-qr-btn');
+
+    // Traducción de errores comunes de Supabase Auth
+    const ERROR_TRANSLATIONS = {
+      "user already registered": "Este correo electrónico ya está registrado.",
+      "invalid login credentials": "Correo o contraseña incorrectos.",
+      "email signup is disabled": "El registro con correo electrónico está desactivado.",
+      "password should be at least 6 characters": "La contraseña debe tener al menos 6 caracteres.",
+      "signup requires verification": "Se requiere verificar la cuenta por correo electrónico.",
+      "database error saving user": "Error en la base de datos al guardar el usuario.",
+      "invalid email": "El formato del correo electrónico no es válido."
+    };
+
+    function getFriendlyErrorMessage(message) {
+      if (!message) return 'Ocurrió un error inesperado.';
+      const lower = message.toLowerCase();
+      for (const [key, val] of Object.entries(ERROR_TRANSLATIONS)) {
+        if (lower.includes(key)) {
+          return val;
+        }
+      }
+      return message;
+    }
+
+    // === Gestión de Tema (Modo Claro/Oscuro) ===
+    function setTheme(theme) {
+      currentTheme = theme;
+      localStorage.setItem('app_theme', theme);
+
+      // Remover clases de tema activa
+      document.body.classList.remove('light-theme');
+
+      let resolvedTheme = theme;
+      if (theme === 'auto') {
+        resolvedTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+
+      if (resolvedTheme === 'light') {
+        document.body.classList.add('light-theme');
+      }
+
+      // Actualizar botones de opción en el menú
+      document.querySelectorAll('#theme-options button').forEach(btn => {
+        if (btn.getAttribute('data-value') === theme) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem('app_theme') || 'auto';
+      setTheme(savedTheme);
+
+      // Escuchar cambios del sistema en tiempo real si está en auto
+      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+        if (currentTheme === 'auto') {
+          setTheme('auto');
+        }
+      });
+    }
+
+    // === Gestión de Multi-idioma (i18n) ===
+    function detectBrowserLanguage() {
+      const userLangs = navigator.languages || [navigator.language || navigator.userLanguage];
+      for (const lang of userLangs) {
+        const code = lang.toLowerCase();
+        if (code.startsWith('es') || code.startsWith('ca') || code.startsWith('gl') || code.startsWith('eu')) {
+          return 'es';
+        }
+      }
+      return 'en';
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('app_lang', lang);
+
+      // Actualizar botones del menú
+      document.querySelectorAll('#lang-options button').forEach(btn => {
+        if (btn.getAttribute('data-value') === lang) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      translateApp();
+    }
+
+    const aboutModal = document.getElementById('about-modal');
+    const closeAboutModalBtn = document.getElementById('close-about-modal-btn');
+
+    function openAboutModal() {
+      if (aboutModal) {
+        aboutModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeAboutModal() {
+      if (aboutModal) {
+        aboutModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    }
+
+    if (closeAboutModalBtn) {
+      closeAboutModalBtn.addEventListener('click', closeAboutModal);
+    }
+    if (aboutModal) {
+      aboutModal.addEventListener('click', (e) => {
+        if (e.target === aboutModal) closeAboutModal();
+      });
+    }
+
+    function bindAboutTrigger() {
+      const trigger = document.getElementById('about-trigger');
+      if (trigger) {
+        trigger.addEventListener('click', (e) => {
+          e.preventDefault();
+          openAboutModal();
+        });
+      }
+    }
+
+    function updateBackgroundAttribution() {
+      const attributionEl = document.getElementById('bg-attribution');
+      if (attributionEl && enableBackgroundImage && currentBackground) {
+        const lang = currentLang === 'auto' ? detectedLang : currentLang;
+        const prefix = lang === 'en' ? 'Background: Photo by' : 'Fondo: Foto de';
+        const suffix = lang === 'en' ? 'on Unsplash' : 'en Unsplash';
+        attributionEl.innerHTML = `<i data-lucide="image" style="width: 12px; height: 12px; margin-top: 1px;"></i> ${prefix} <a href="${currentBackground.profile}" target="_blank" style="text-decoration: underline; color: inherit;">${currentBackground.author}</a> ${suffix}`;
+        attributionEl.classList.remove('hidden');
+        lucide.createIcons();
+      } else if (attributionEl) {
+        attributionEl.classList.add('hidden');
+      }
+    }
+
+    function translateApp() {
+      const lang = currentLang === 'auto' ? detectedLang : currentLang;
+      
+      // Traducir todos los elementos marcados con data-i18n
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const text = t(key);
+        if (text.includes('<')) {
+          el.innerHTML = text;
+        } else {
+          el.textContent = text;
+        }
+      });
+
+      // Vincular eventos del enlace 'pablofelip.online' en el footer
+      bindAboutTrigger();
+
+      // Actualizar atribución del fondo en el idioma activo
+      updateBackgroundAttribution();
+
+      // Actualizar inputs placeholders
+      if (urlInput) {
+        urlInput.placeholder = lang === 'es' ? 'https://ejemplo.com/articulo-muy-largo-de-leer' : 'https://example.com/very-long-article-to-read';
+      }
+      if (slugInput) {
+        slugInput.placeholder = !allowCustomSlugs ? (lang === 'es' ? 'Alias desactivado' : 'Alias disabled') : 'mi-enlace';
+        const slugHint = document.querySelector('.label-with-hint span.hint');
+        if (slugHint) {
+          slugHint.textContent = !allowCustomSlugs 
+            ? (lang === 'es' ? 'Desactivado por administración' : 'Disabled by administrator') 
+            : t('custom_alias_hint');
+        }
+      }
+      if (searchInput) {
+        searchInput.placeholder = t('search_placeholder');
+      }
+
+      // Actualizar avisos dinámicos
+      updateWarningsText(lang);
+    }
+
+    function updateWarningsText(lang) {
+      const anonWarning = document.getElementById('anonymous-warning');
+      const guestNotice = document.getElementById('guest-info-notice');
+      
+      if (lang === 'es') {
+        if (anonWarning) {
+          anonWarning.querySelector('span').innerHTML = 'Este enlace es temporal y caducará en 30 días. <a href="#" id="warning-login-link">Inicia sesión o regístrate</a> para conservarlo para siempre.';
+        }
+        if (guestNotice) {
+          guestNotice.querySelector('span').innerHTML = 'Estos enlaces son temporales y se guardan únicamente en este navegador (localStorage) durante 30 días. <a href="#" class="notice-link" id="notice-login-link">Accede o regístrate</a> para conservarlos para siempre.';
+        }
+      } else {
+        if (anonWarning) {
+          anonWarning.querySelector('span').innerHTML = 'This link is temporary and will expire in 30 days. <a href="#" id="warning-login-link">Log in or sign up</a> to keep it forever.';
+        }
+        if (guestNotice) {
+          guestNotice.querySelector('span').innerHTML = 'These links are temporary and saved only in this browser (localStorage) for 30 days. <a href="#" class="notice-link" id="notice-login-link">Log in or sign up</a> to keep them forever.';
+        }
+      }
+      
+      // Re-vincular manejadores de clic de los enlaces internos
+      const warningLoginLink = document.getElementById('warning-login-link');
+      if (warningLoginLink) {
+        warningLoginLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          openAuthModal('login');
+        });
+      }
+      const noticeLoginLink = document.getElementById('notice-login-link');
+      if (noticeLoginLink) {
+        noticeLoginLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          openAuthModal('login');
+        });
+      }
+    }
+
+    function initLang() {
+      detectedLang = detectBrowserLanguage();
+      const savedLang = localStorage.getItem('app_lang') || 'auto';
+      setLanguage(savedLang);
+    }
+
+    // Inicializar la aplicación
+    async function initApp() {
+      // Inicializar localización y tema
+      initTheme();
+      initLang();
+
+      // Configurar eventos del menú de ajustes
+      if (settingsToggleBtn && settingsMenu) {
+        settingsToggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          settingsMenu.classList.toggle('hidden');
+        });
+        
+        // Cerrar menú al hacer clic fuera
+        document.addEventListener('click', (e) => {
+          if (!settingsMenu.contains(e.target) && e.target !== settingsToggleBtn && !settingsToggleBtn.contains(e.target)) {
+            settingsMenu.classList.add('hidden');
+          }
+        });
+      }
+
+      // Conmutadores de tema
+      document.querySelectorAll('#theme-options button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          setTheme(btn.getAttribute('data-value'));
+        });
+      });
+
+      // Conmutadores de idioma
+      document.querySelectorAll('#lang-options button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          setLanguage(btn.getAttribute('data-value'));
+        });
+      });
+
+      try {
+        // Obtener configuración de Supabase desde la API local
+        const configRes = await fetch('/api/config');
+        const config = await configRes.json();
+        
+        if (!config.supabaseUrl || !config.supabaseAnonKey) {
+          throw new Error('Configuración de Supabase incompleta.');
+        }
+
+        allowUserRegistration = config.allowUserRegistration !== false;
+        allowCustomSlugs = config.allowCustomSlugs !== false;
+        enableQrGeneration = config.enableQrGeneration !== false;
+        enableBackgroundImage = config.enableBackgroundImage !== false;
+
+        if (enableBackgroundImage) {
+          currentBackground = BACKGROUNDS[Math.floor(Math.random() * BACKGROUNDS.length)];
+          document.body.style.setProperty('--bg-image-url', `url("${currentBackground.url}")`);
+          document.body.classList.add('has-bg-image');
+          updateBackgroundAttribution();
+        } else {
+          document.body.classList.remove('has-bg-image');
+          updateBackgroundAttribution();
+        }
+
+        // Deshabilitar el slug input si no está permitido
+        if (!allowCustomSlugs && slugInput) {
+          slugInput.disabled = true;
+          slugInput.placeholder = currentLang === 'en' ? 'Alias disabled' : 'Alias desactivado';
+          const slugHint = document.querySelector('.label-with-hint span.hint');
+          if (slugHint) {
+            slugHint.textContent = currentLang === 'en' ? 'Disabled by administrator' : 'Desactivado por administración';
+          }
+        }
+
+        // Crear cliente de Supabase
+        supabaseClient = supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+        // Verificar sesión activa
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        updateUserSession(session?.user || null);
+
+        // Escuchar cambios de estado de autenticación
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+          updateUserSession(session?.user || null);
+        });
+
+      } catch (err) {
+        console.error('Error al inicializar la app:', err);
+        showToast(t('Error de configuración. Revisa las variables de entorno.'), 'error');
+      }
+
+      // Inicializar Lucide Icons
+      lucide.createIcons();
+    }
+
+    // Actualizar el estado del usuario en la interfaz
+    function updateUserSession(user) {
+      currentUser = user;
+      const guestNotice = document.getElementById('guest-info-notice');
+      const dashTitleText = document.getElementById('dash-title-text');
+      
+      const lang = currentLang === 'auto' ? detectedLang : currentLang;
+      const logoutTitleText = lang === 'en' ? 'Log out' : 'Cerrar sesión';
+      const loginButtonText = lang === 'en' ? 'Log in' : 'Acceder';
+
+      if (dashTitleText) {
+        dashTitleText.textContent = user ? t('dash_title_user') : t('dash_title_temp');
+      }
+
+      if (user) {
+        // Usuario autenticado
+        authNav.innerHTML = `
+          <div class="user-badge">
+            <i data-lucide="user"></i>
+            <span class="user-email" title="${user.email}">${user.email}</span>
+            <button id="logout-btn" class="logout-btn" title="${logoutTitleText}">
+              <i data-lucide="log-out"></i>
+            </button>
+          </div>
+        `;
+        tabManageText.textContent = t('tab_manage_user');
+        
+        if (guestNotice) guestNotice.classList.add('hidden');
+        
+        // Habilitar selección de expiración
+        if (expirySelect) {
+          expirySelect.disabled = false;
+        }
+        if (expiryHint) {
+          expiryHint.textContent = t('expiry_hint_select');
+        }
+        
+        // Manejador del botón de cerrar sesión
+        document.getElementById('logout-btn').addEventListener('click', handleLogout);
+      } else {
+        // Invitado
+        authNav.innerHTML = `
+          <button id="nav-login-btn" class="nav-btn secondary-btn">
+            <i data-lucide="log-in"></i><span>${loginButtonText}</span>
+          </button>
+        `;
+        tabManageText.textContent = t('tab_manage_temp');
+        
+        if (guestNotice) guestNotice.classList.remove('hidden');
+        
+        // Deshabilitar selección de expiración y forzar 30d
+        if (expirySelect) {
+          expirySelect.disabled = true;
+          expirySelect.value = '30d';
+        }
+        if (expiryHint) {
+          expiryHint.textContent = t('expiry_hint_register');
+        }
+        
+        // Volver a pestaña de creación por seguridad
+        switchTab('create');
+
+        document.getElementById('nav-login-btn').addEventListener('click', () => openAuthModal('login'));
+        
+        // Enlazar el link del aviso para abrir modal de login
+        const noticeLoginLink = document.getElementById('notice-login-link');
+        if (noticeLoginLink) {
+          noticeLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            openAuthModal('login');
+          });
+        }
+      }
+      
+      lucide.createIcons();
+    }
+
+    // Gestionar el Logout
+    async function handleLogout() {
+      if (!supabaseClient) return;
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) {
+        showToast(error.message, 'error');
+      } else {
+        showToast(t('toast_logout_success'), 'success');
+      }
+    }
+
+    // Cambiar entre pestañas
+    function switchTab(tab) {
+      if (tab === 'create') {
+        tabCreate.classList.add('active');
+        tabManage.classList.remove('active');
+        cardCreate.classList.remove('hidden');
+        cardManage.classList.add('hidden');
+      } else if (tab === 'manage') {
+        tabCreate.classList.remove('active');
+        tabManage.classList.add('active');
+        cardCreate.classList.add('hidden');
+        cardManage.classList.remove('hidden');
+        loadUserLinks();
+      }
+    }
+
+    tabCreate.addEventListener('click', () => switchTab('create'));
+    tabManage.addEventListener('click', () => switchTab('manage'));
+
+    // Modales de Auth
+    function openAuthModal(mode = 'login') {
+      authMode = mode;
+      authModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden'; // Bloquear scroll
+      
+      if (mode === 'login') {
+        modalTitle.textContent = 'Iniciar sesión';
+        authSubmitBtn.querySelector('span').textContent = 'Entrar';
+        authSubmitBtn.querySelector('i').setAttribute('data-lucide', 'log-in');
+        authSwitchText.innerHTML = '¿No tienes cuenta? <a href="#" id="auth-switch-link">Regístrate gratis</a>';
+        
+        // Ocultar confirmación de contraseña
+        confirmPasswordGroup.classList.add('hidden');
+        authConfirmPassword.removeAttribute('required');
+      } else {
+        modalTitle.textContent = 'Crear cuenta';
+        authSubmitBtn.querySelector('span').textContent = 'Registrarse';
+        authSubmitBtn.querySelector('i').setAttribute('data-lucide', 'user-plus');
+        authSwitchText.innerHTML = '¿Ya tienes cuenta? <a href="#" id="auth-switch-link">Inicia sesión aquí</a>';
+        
+        // Mostrar confirmación de contraseña
+        confirmPasswordGroup.classList.remove('hidden');
+        authConfirmPassword.setAttribute('required', 'required');
+      }
+
+      lucide.createIcons();
+    }
+
+    // Delegación de eventos para alternar entre Login y Registro
+    authSwitchText.addEventListener('click', (e) => {
+      if (e.target && e.target.id === 'auth-switch-link') {
+        e.preventDefault();
+        openAuthModal(authMode === 'login' ? 'signup' : 'login');
+      }
+    });
+
+    function closeAuthModal() {
+      authModal.classList.add('hidden');
+      document.body.style.overflow = '';
+      authForm.reset();
+    }
+
+    closeModalBtn.addEventListener('click', closeAuthModal);
+    authModal.addEventListener('click', (e) => {
+      if (e.target === authModal) closeAuthModal();
+    });
+
+    // Enviar formulario de Auth
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!supabaseClient) return;
+
+      const email = authEmail.value.trim();
+      const password = authPassword.value;
+      const confirmPassword = authConfirmPassword.value;
+
+      // Validación extra en el cliente para contraseñas duplicadas
+      if (authMode === 'signup' && password !== confirmPassword) {
+        showToast('Las contraseñas no coinciden. Por favor verifícalas.', 'error');
+        return;
+      }
+      
+      authSubmitBtn.disabled = true;
+      authSubmitBtn.classList.add('loading');
+      authSubmitBtn.querySelector('span').textContent = authMode === 'login' ? 'Accediendo...' : 'Creando cuenta...';
+
+      try {
+        let result;
+        if (authMode === 'login') {
+          result = await supabaseClient.auth.signInWithPassword({ email, password });
+        } else {
+          result = await supabaseClient.auth.signUp({ email, password });
+        }
+
+        if (result.error) {
+          throw result.error;
+        }
+
+        if (authMode === 'signup' && result.data.user && result.data.session === null) {
+          showToast('Registro iniciado. Por favor revisa tu correo para confirmar.', 'success');
+        } else {
+          showToast(authMode === 'login' ? t('toast_login_welcome') : t('toast_signup_success'), 'success');
+        }
+        
+        closeAuthModal();
+
+      } catch (err) {
+        showToast(getFriendlyErrorMessage(err.message), 'error');
+      } finally {
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.classList.remove('loading');
+        authSubmitBtn.querySelector('span').textContent = authMode === 'login' ? 'Entrar' : 'Registrarse';
+      }
+    });
+
+    // Cargar enlaces del usuario
+    async function loadUserLinks() {
+      linksListContainer.innerHTML = `
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Cargando tus enlaces...</p>
+        </div>
+      `;
+
+      if (currentUser) {
+        // Cargar desde el servidor (autenticado)
+        try {
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          const token = session?.access_token;
+
+          const response = await fetch('/api/my-urls', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          const result = await response.json();
+          
+          if (result.success) {
+            userUrls = result.data || [];
+            searchInput.value = ''; // Limpiar buscador al refrescar
+            filterAndRenderLinks();
+          } else {
+            linksListContainer.innerHTML = `<div class="error-state"><i data-lucide="alert-triangle"></i><p>${result.error}</p></div>`;
+            lucide.createIcons();
+          }
+        } catch (err) {
+          linksListContainer.innerHTML = `<div class="error-state"><i data-lucide="alert-triangle"></i><p>Error de conexión con el servidor.</p></div>`;
+          lucide.createIcons();
+        }
+      } else {
+        // Cargar desde localStorage (invitado)
+        try {
+          const localData = localStorage.getItem('anon_links');
+          const allLocal = localData ? JSON.parse(localData) : [];
+          
+          // Filtrar enlaces locales ya expirados
+          const now = new Date();
+          userUrls = allLocal.filter(item => !item.expiresAt || new Date(item.expiresAt) > now);
+          
+          // Guardar limpia sin expirados
+          localStorage.setItem('anon_links', JSON.stringify(userUrls));
+
+          searchInput.value = '';
+          filterAndRenderLinks();
+        } catch (err) {
+          console.error(err);
+          linksListContainer.innerHTML = `<div class="error-state"><i data-lucide="alert-triangle"></i><p>Error al cargar enlaces temporales.</p></div>`;
+          lucide.createIcons();
+        }
+      }
+    }
+
+    // Filtrar enlaces localmente según la búsqueda
+    function filterAndRenderLinks() {
+      const query = searchInput.value.toLowerCase().trim();
+      if (!query) {
+        renderLinksList(userUrls);
+        return;
+      }
+
+      const filtered = userUrls.filter(item => 
+        (item.slug && item.slug.toLowerCase().includes(query)) || 
+        (item.url && item.url.toLowerCase().includes(query))
+      );
+      renderLinksList(filtered, true);
+    }
+
+    // Evento de búsqueda
+    searchInput.addEventListener('input', filterAndRenderLinks);
+
+    refreshLinksBtn.addEventListener('click', loadUserLinks);
+
+    // Pintar la lista de enlaces
+    function renderLinksList(urls, isSearchResult = false) {
+      if (urls.length === 0) {
+        if (isSearchResult) {
+          linksListContainer.innerHTML = `
+            <div class="empty-state">
+              <i data-lucide="search-code"></i>
+              <p>No se encontraron enlaces que coincidan con la búsqueda.</p>
+            </div>
+          `;
+        } else {
+          linksListContainer.innerHTML = `
+            <div class="empty-state">
+              <i data-lucide="link"></i>
+              <p>Aún no tienes enlaces creados.</p>
+              <button class="nav-btn primary-btn" onclick="switchTab('create')">Crear mi primer enlace</button>
+            </div>
+          `;
+        }
+        lucide.createIcons();
+        return;
+      }
+
+      let html = '<div class="links-grid">';
+      
+      urls.forEach(url => {
+        const shortUrl = `${window.location.origin}/${url.slug}`;
+        
+        let dateInfo = '';
+        const expiresAtVal = url.expires_at || url.expiresAt;
+        if (expiresAtVal) {
+          const expDate = new Date(expiresAtVal);
+          const diffMs = expDate - new Date();
+          const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+          dateInfo = `<span class="link-date exp-date" style="color: #f59e0b; display: inline-flex; align-items: center; gap: 4px;">
+            <i data-lucide="clock" style="width: 12px; height: 12px;"></i> Caduca en ${diffDays} días
+          </span>`;
+        } else {
+          const dateStr = new Date(url.created_at || url.createdAt).toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+          });
+          dateInfo = `<span class="link-date">${dateStr}</span>`;
+        }
+
+        html += `
+          <div class="link-item" id="link-item-${url.slug}">
+            <div class="link-info">
+              <div class="link-main">
+                <span class="link-slug">/${url.slug}</span>
+                ${dateInfo}
+              </div>
+              <a href="${url.url}" target="_blank" class="link-target" title="${url.url}">
+                ${url.url}
+              </a>
+            </div>
+            
+            <div class="link-actions">
+              <div class="link-clicks" title="Total de clics" style="${expiresAtVal ? 'display:none;' : ''}">
+                <i data-lucide="bar-chart-2"></i>
+                <span>${url.clicks || 0}</span>
+              </div>
+              
+              ${enableQrGeneration ? `
+              <button class="action-btn qr" onclick="openQRModal('${shortUrl}')" title="Ver código QR">
+                <i data-lucide="qr-code"></i>
+              </button>
+              ` : ''}
+              
+              <button class="action-btn copy" onclick="copyToClipboardDirect('${shortUrl}')" title="Copiar enlace acortado">
+                <i data-lucide="copy"></i>
+              </button>
+              
+              <button class="action-btn delete" onclick="deleteLink('${url.slug}')" title="Eliminar enlace">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      linksListContainer.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    // Control de Modal de Confirmación
+    let slugToDelete = null;
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmSlugText = document.getElementById('confirm-slug-text');
+    const closeConfirmModalBtn = document.getElementById('close-confirm-modal-btn');
+    const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+
+    function openConfirmModal(slug) {
+      slugToDelete = slug;
+      confirmSlugText.textContent = `/${slug}`;
+      confirmModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      lucide.createIcons();
+    }
+
+    function closeConfirmModal() {
+      slugToDelete = null;
+      confirmModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    closeConfirmModalBtn.addEventListener('click', closeConfirmModal);
+    cancelDeleteBtn.addEventListener('click', closeConfirmModal);
+    confirmModal.addEventListener('click', (e) => {
+      if (e.target === confirmModal) closeConfirmModal();
+    });
+
+    // --- Lógica del Código QR y Proyección ---
+    function getQrLib() {
+      return window.QRCode || window.qrcode;
+    }
+
+    function generateQR(text, canvasElement) {
+      if (!canvasElement) return;
+      const qrLib = getQrLib();
+      if (!qrLib) {
+        console.error('Librería QRCode no está disponible.');
+        return;
+      }
+      qrLib.toCanvas(canvasElement, text, {
+        width: 450,
+        margin: 2,
+        color: {
+          dark: '#0f172a',
+          light: '#ffffff'
+        }
+      }, function (error) {
+        if (error) console.error('Error al generar QR:', error);
+      });
+    }
+
+    function showQRProjection(text) {
+      const cleanUrl = text.replace(/^https?:\/\//, '');
+      projectionUrlText.textContent = cleanUrl;
+      
+      const qrLib = getQrLib();
+      if (!qrLib) {
+        showToast(t('toast_qr_lib_error'), 'error');
+        return;
+      }
+
+      qrLib.toCanvas(projectionQrCanvas, text, {
+        width: 800,
+        margin: 2,
+        color: {
+          dark: '#0f172a',
+          light: '#ffffff'
+        }
+      }, function (error) {
+        if (error) {
+          console.error('Error al proyectar QR:', error);
+        } else {
+          qrProjectionOverlay.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    }
+
+    function openQRModal(text) {
+      const cleanUrl = text.replace(/^https?:\/\//, '');
+      modalQrUrlText.textContent = cleanUrl;
+      generateQR(text, modalQrCanvas);
+      
+      if (modalQrCopyBtn) {
+        modalQrCopyBtn.onclick = () => {
+          navigator.clipboard.writeText(text).then(() => {
+            showToast(t('toast_copied'), 'success');
+          }).catch(err => {
+            console.error('Error al copiar:', err);
+          });
+        };
+      }
+
+      modalProjectQrBtn.onclick = () => {
+        qrModal.classList.add('hidden');
+        showQRProjection(text);
+      };
+      
+      qrModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      lucide.createIcons();
+    }
+
+    // Eventos de control de modales QR
+    if (closeQrModalBtn) {
+      closeQrModalBtn.addEventListener('click', () => {
+        qrModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+    }
+    
+    if (qrModal) {
+      qrModal.addEventListener('click', (e) => {
+        if (e.target === qrModal) {
+          qrModal.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+
+    if (closeProjectionBtn) {
+      closeProjectionBtn.addEventListener('click', () => {
+        qrProjectionOverlay.classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+    }
+
+    if (qrProjectionOverlay) {
+      qrProjectionOverlay.addEventListener('click', (e) => {
+        if (e.target === qrProjectionOverlay) {
+          qrProjectionOverlay.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+
+    confirmDeleteBtn.addEventListener('click', async () => {
+      if (!slugToDelete) return;
+
+      const slug = slugToDelete;
+      closeConfirmModal();
+
+      if (currentUser) {
+        // Borrar del servidor (usuario autenticado)
+        try {
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          const token = session?.access_token;
+
+          const response = await fetch(`/api/delete-url`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ slug })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showToast('Enlace eliminado correctamente.', 'success');
+            animateItemDeletion(slug);
+          } else {
+            showToast(result.error || 'No se pudo eliminar el enlace.', 'error');
+          }
+        } catch (err) {
+          showToast('Error al conectar con el servidor.', 'error');
+        }
+      } else {
+        // Borrar de localStorage (usuario invitado)
+        try {
+          const localData = localStorage.getItem('anon_links');
+          const allLocal = localData ? JSON.parse(localData) : [];
+          const updated = allLocal.filter(item => item.slug !== slug);
+          localStorage.setItem('anon_links', JSON.stringify(updated));
+          showToast('Enlace eliminado de tu navegador.', 'success');
+          animateItemDeletion(slug);
+        } catch (err) {
+          showToast('Error al eliminar enlace.', 'error');
+        }
+      }
+    });
+
+    function animateItemDeletion(slug) {
+      const itemEl = document.getElementById(`link-item-${slug}`);
+      if (itemEl) {
+        itemEl.style.opacity = '0';
+        itemEl.style.transform = 'scale(0.95)';
+        setTimeout(() => loadUserLinks(), 300);
+      }
+    }
+
+    window.copyToClipboardDirect = function(text) {
+      navigator.clipboard.writeText(text)
+        .then(() => showToast(t('toast_copied'), 'success'))
+        .catch(() => showToast('Error al copiar enlace', 'error'));
+    };
+
+    window.deleteLink = function(slug) {
+      openConfirmModal(slug);
+    };
+    // Evento Submit del Acortador
+    shortenForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+      submitBtn.querySelector('span').textContent = t('btn_generating');
+      resultPanel.classList.add('hidden');
+
+      const url = urlInput.value.trim();
+      const slug = slugInput.value.trim();
+      const expiry = expirySelect ? expirySelect.value : '30d';
+
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        
+        // Incluir cabecera Authorization si hay usuario autenticado
+        if (supabaseClient) {
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          if (session?.access_token) {
+            headers['Authorization'] = `Bearer ${session.access_token}`;
+          }
+        }
+
+        const response = await fetch('/api/shorten', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ url, slug: slug || undefined, expiry })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showToast(t('toast_shorten_success'), 'success');
+          
+          shortUrlOutput.value = result.data.shortUrl;
+          
+          // Generar y mostrar QR si está habilitado
+          if (enableQrGeneration) {
+            resultQrContainer.classList.remove('hidden');
+            generateQR(result.data.shortUrl, resultQrCanvas);
+            
+            projectQrBtn.onclick = () => {
+              showQRProjection(result.data.shortUrl);
+            };
+          } else {
+            resultQrContainer.classList.add('hidden');
+          }
+
+          // Mostrar u ocultar advertencia de caducidad
+          const anonWarning = document.getElementById('anonymous-warning');
+          if (anonWarning) {
+            if (!currentUser) {
+              anonWarning.classList.remove('hidden');
+              const warningLoginLink = document.getElementById('warning-login-link');
+              if (warningLoginLink) {
+                warningLoginLink.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  openAuthModal('login');
+                });
+              }
+            } else {
+              anonWarning.classList.add('hidden');
+            }
+          }
+
+          resultPanel.classList.remove('hidden');
+          resultPanel.scrollIntoView({ behavior: 'smooth' });
+          
+          // Guardar localmente si el creador es un invitado
+          if (!currentUser) {
+            try {
+              const localData = localStorage.getItem('anon_links');
+              const allLocal = localData ? JSON.parse(localData) : [];
+              allLocal.unshift({
+                slug: result.data.slug,
+                url: url,
+                expiresAt: result.data.expiresAt,
+                createdAt: new Date().toISOString(),
+                clicks: 0
+              });
+              localStorage.setItem('anon_links', JSON.stringify(allLocal));
+            } catch (localErr) {
+              console.error('Error al guardar en localStorage:', localErr);
+            }
+          }
+
+          slugInput.value = '';
+        } else {
+          showToast(result.error || 'Ocurrió un error inesperado.', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Error de conexión con el servidor.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+        submitBtn.querySelector('span').textContent = t('btn_shorten');
+      }
+    });
+
+    // Copiar al Portapapeles (Formulario)
+    copyBtn.addEventListener('click', () => {
+      shortUrlOutput.select();
+      shortUrlOutput.setSelectionRange(0, 99999);
+      
+      navigator.clipboard.writeText(shortUrlOutput.value)
+        .then(() => {
+          copyText.textContent = 'Copiado';
+          copyIcon.setAttribute('data-lucide', 'check');
+          lucide.createIcons();
+          copyBtn.classList.add('success');
+
+          showToast('Enlace copiado al portapapeles.', 'success');
+
+          setTimeout(() => {
+            copyText.textContent = 'Copiar';
+            copyIcon.setAttribute('data-lucide', 'copy');
+            lucide.createIcons();
+            copyBtn.classList.remove('success');
+          }, 2000);
+        })
+        .catch(() => {
+          showToast('No se pudo copiar automáticamente.', 'error');
+        });
+    });
+
+    // Función Toast/Notificaciones
+    function showToast(message, type = 'success') {
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      toast.classList.remove('hidden');
+
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+    }
+
+    // Inicializar
+    initApp();
+  </script>
+</body>
+</html>
