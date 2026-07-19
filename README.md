@@ -4,7 +4,7 @@ Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel*
 
 ## 🚀 Origen y justificación del stack (el reto)
 
-Este proyecto nació como un experimento y exploración personal a raíz de un reto en una sobremesa de **[GEG Spain](https://transformacioneducativa.es/)**. La propuesta inicial consistía en crear el acortador utilizando **Google Apps Script + Google Sheets**. Sin embargo, la motivación principal del desarrollo fue superar las limitaciones de persistencia de datos e integración de ese ecosistema, logrando una persistencia de datos robusta, escalable y con alto rendimiento fuera del ecosistema de Google Workspace, Google Sheets y Google Apps Script mediante un stack moderno compuesto por **Vercel y Supabase**.
+Este proyecto nació como un experimento y exploración personal a raíz de un reto en una sobremesa de **[GEG Spain](https://transformacioneducativa.es/)**. La propuesta inicial consistía en crear el acortador utilizando **Google Apps Script + Google Sheets**. Sin embargo, la motivación principal del desarrollo fue superar las limitaciones de persistencia de datos e integración de ese ecosistema, logrando una persistencia de datos robusta, escalable y con alto rendimiento fuera del ecosistema de Google Workspace, Google Sheets y Google Apps Script mediante un stack moderno compuesto por **[Vercel](https://vercel.com/) y [Supabase](https://supabase.com/)**.
 
 ### Comparativa: Google Apps Script vs. Vercel + Supabase
 
