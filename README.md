@@ -70,6 +70,13 @@ Ideal para presentaciones, charlas o aulas educativas.
 
 ![Pantalla de proyección de código QR](assets/proyectar-qr.png)
 
+### 6. Menú de ajustes y personalización
+La aplicación cuenta con un panel desplegable de configuración rápida.
+* **Preferencia de tema**: Permite alternar la interfaz entre tema claro, oscuro o respetar la configuración automática del sistema operativo.
+* **Preferencia de idioma**: Selección rápida de idioma entre Español, Inglés o detección automática según el navegador del usuario.
+
+![Pantalla del menú de ajustes](assets/ajustes.png)
+
 ## Estructura del proyecto
 
 * `public/`: Contiene la interfaz de usuario web (HTML/CSS).
