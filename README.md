@@ -1,6 +1,33 @@
 # Acortador de URLs en Vercel & Supabase
 
-Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302) que permiten el correcto funcionamiento de las previsualizaciones en redes sociales y apps de mensajería.
+Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
+
+## 🚀 Origen y Justificación del Stack (El Reto)
+
+Este proyecto nació como un experimento y exploración personal a raíz de un reto en una sobremesa de **GEG Spain**. La propuesta inicial consistía en crear el acortador utilizando **Google Apps Script + Google Sheets**. Sin embargo, para lograr una solución robusta y moderna, decidimos dar el salto a un stack compuesto por **Vercel y Supabase**.
+
+### Comparativa: Google Apps Script vs. Vercel + Supabase
+
+| Característica | Google Apps Script + Sheets | Vercel (Edge/Serverless) + Supabase (PostgreSQL) |
+| :--- | :--- | :--- |
+| **Latencia de redirección** | **Alta**: Apps Script y la lectura de Sheets tardan cientos de ms o segundos. | **Ultra-baja**: Ejecución Edge y base de datos optimizada en milisegundos. |
+| **Previsualización en RRSS** | **Mala**: La sandbox de Google y el renderizado JS impiden que los bots lean las metaetiquetas. | **Perfecta**: Redirección HTTP 302 nativa que permite a los bots extraer las previews al instante. |
+| **Concurrencia** | **Limitada**: Frecuentes bloqueos de escritura (`LockService`) con múltiples usuarios concurrentes. | **Alta**: PostgreSQL gestiona miles de transacciones concurrentes nativamente. |
+| **Búsquedas indexadas** | **Ineficiente**: Búsqueda lineal celda por celda sobre las filas de la hoja. | **Instantánea**: Búsqueda indexada sobre la columna del `slug`. |
+| **Seguridad** | **Compleja**: Difícil segmentar qué filas puede leer o editar cada usuario invitado. | **Nativa**: Supabase ofrece RLS (*Row Level Security*) para control de accesos granular. |
+
+### Exploración del Stack en Planes Gratuitos (Límites)
+
+Como parte de este ejercicio de aprendizaje continuo y desarrollo personal, el proyecto se ha desplegado utilizando estrictamente los **planes gratuitos** de ambos proveedores, lo que impone ciertas limitaciones a tener en cuenta para su mantenimiento:
+
+* **Vercel (Hobby Plan)**:
+  * **Límite de tiempo de ejecución de Serverless Functions**: 10 segundos por petición.
+  * **Ancho de banda mensual**: 100 GB.
+  * **Límite de peticiones diarias**: 100,000 peticiones serverless por día.
+* **Supabase (Free Plan)**:
+  * **Base de datos**: 500 MB de espacio de almacenamiento.
+  * **Pausa por inactividad**: El proyecto entra en pausa si pasa 1 semana sin recibir tráfico o llamadas a la API (requiere reactivación manual desde el dashboard).
+  * **Ancho de banda de red**: 2 GB de salida mensual.
 
 ## Estructura del Proyecto
 
