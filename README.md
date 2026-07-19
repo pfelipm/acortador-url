@@ -44,8 +44,9 @@ Como parte de este ejercicio de aprendizaje continuo y desarrollo personal, el p
 ## Paso 1: Configuración en Supabase
 
 1. Crea un proyecto gratuito en [Supabase](https://supabase.com/).
-2. Ve al **SQL Editor** en tu panel de Supabase y ejecuta la siguiente consulta para crear la tabla de URLs:
+2. Ve al **SQL Editor** en tu panel de Supabase y ejecuta las siguientes consultas para preparar tu base de datos:
 
+### 1. Crear la tabla de URLs y su índice
 ```sql
 -- Crear la tabla para almacenar los enlaces
 create table urls (
@@ -53,11 +54,111 @@ create table urls (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   slug text unique not null,
   url text not null,
-  clicks bigint default 0 not null
+  clicks bigint default 0 not null,
+  expires_at timestamp with time zone,
+  user_id uuid references auth.users(id) on delete cascade
 );
 
 -- Crear un índice en la columna 'slug' para búsquedas ultra rápidas
 create index idx_urls_slug on urls(slug);
+```
+
+### 2. Configurar la seguridad (RLS) en la tabla `urls`
+```sql
+-- Habilitar RLS (Row Level Security)
+alter table urls enable row level security;
+
+-- Política: Cualquiera puede leer la URL original a partir del slug (para redirección)
+create policy "Permitir lectura pública de URLs"
+on urls for select
+using (true);
+
+-- Política: Los usuarios autenticados pueden insertar sus propios enlaces
+create policy "Permitir inserción a usuarios autenticados"
+on urls for insert
+to authenticated
+with check (auth.uid() = user_id);
+
+-- Política: Permitir inserción anónima (si se quiere acortar sin cuenta)
+create policy "Permitir inserción anónima"
+on urls for insert
+to anon
+with check (user_id is null);
+
+-- Política: Los usuarios pueden ver solo sus propios enlaces
+create policy "Permitir lectura de enlaces propios"
+on urls for select
+to authenticated
+using (auth.uid() = user_id);
+
+-- Política: Los usuarios solo pueden borrar sus propios enlaces
+create policy "Permitir borrado de enlaces propios"
+on urls for delete
+to authenticated
+using (auth.uid() = user_id);
+
+-- Política: Permitir actualización de clics de forma global
+create policy "Permitir actualización de clics"
+on urls for update
+using (true);
+```
+
+### 3. Crear y configurar la tabla `app_settings`
+```sql
+-- Crear la tabla de configuración global
+create table if not exists app_settings (
+  id integer primary key default 1 check (id = 1),
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  max_urls_per_user integer default 100 not null,
+  anon_url_expiry_days integer default 30 not null,
+  allow_user_registration boolean default true not null,
+  enable_auto_cleanup boolean default true not null,
+  allow_custom_slugs boolean default true not null,
+  enable_qr_generation boolean default true not null,
+  enable_background_image boolean default true not null,
+  min_password_length integer default 6 not null,
+  forbidden_slugs text[] default array['admin', 'api', 'login', 'signup', 'dashboard', 'settings', 'shorten']
+);
+
+-- Comentario descriptivo de la columna min_password_length
+comment on column app_settings.min_password_length is 'Longitud mínima requerida para las contraseñas de nuevas cuentas';
+
+-- Habilitar RLS en la tabla de configuraciones
+alter table app_settings enable row level security;
+
+-- Permitir lectura pública de los ajustes de la aplicación
+create policy "Permitir lectura pública de app_settings"
+on app_settings for select
+using (true);
+
+-- Insertar la configuración inicial por defecto (si no existe)
+insert into app_settings (
+  id, 
+  max_urls_per_user, 
+  anon_url_expiry_days, 
+  allow_user_registration, 
+  enable_auto_cleanup, 
+  allow_custom_slugs,
+  enable_qr_generation,
+  enable_background_image,
+  min_password_length
+) values (1, 100, 30, true, true, true, true, true, 6)
+on conflict (id) do nothing;
+```
+
+### 4. Programar la limpieza automática de enlaces expirados
+*(Nota: Requiere tener activa la extensión `pg_cron` en tu panel de Supabase).*
+```sql
+-- Programar la nueva versión condicional del cron job
+select cron.schedule(
+  'limpiar-enlaces-expirados',
+  '0 0 * * *',
+  $$
+    delete from urls 
+    where expires_at < now() 
+      and (select enable_auto_cleanup from app_settings where id = 1 limit 1) = true;
+  $$
+);
 ```
 
 ---
