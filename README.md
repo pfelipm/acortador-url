@@ -99,14 +99,14 @@ La aplicación cuenta con un panel desplegable de configuración rápida.
 * `api/lib/supabase.js`: Inicialización del cliente de Supabase.
 * `vercel.json`: Reglas de enrutamiento y redirección en el Edge de Vercel.
 
----
+## 🛠️ Despliegue
 
-## Paso 1: Configuración en Supabase
+### Paso 1: Configuración en Supabase
 
 1. Crea un proyecto gratuito en [Supabase](https://supabase.com/).
 2. Ve al **SQL Editor** en tu panel de Supabase y ejecuta las siguientes consultas para preparar tu base de datos:
 
-### 1. Crear la tabla de URLs y su índice
+#### Crear la tabla de URLs y su índice
 ```sql
 -- Crear la tabla para almacenar los enlaces
 create table urls (
@@ -132,7 +132,7 @@ comment on column urls.user_id is 'Referencia al usuario registrado en Supabase 
 create index idx_urls_slug on urls(slug);
 ```
 
-### 2. Configurar la seguridad (RLS) en la tabla `urls`
+#### Configurar la seguridad (RLS) en la tabla `urls`
 ```sql
 -- Habilitar RLS (Row Level Security)
 alter table urls enable row level security;
@@ -172,7 +172,7 @@ on urls for update
 using (true);
 ```
 
-### 3. Crear y configurar la tabla `app_settings`
+#### Crear y configurar la tabla `app_settings`
 ```sql
 -- Crear la tabla de configuración global
 create table if not exists app_settings (
@@ -225,7 +225,7 @@ insert into app_settings (
 on conflict (id) do nothing;
 ```
 
-### 4. Programar la limpieza automática de enlaces expirados
+#### Programar la limpieza automática de enlaces expirados
 *(Nota: Requiere tener activa la extensión `pg_cron` en tu panel de Supabase).*
 ```sql
 -- Programar la nueva versión condicional del cron job
@@ -240,9 +240,7 @@ select cron.schedule(
 );
 ```
 
----
-
-## Paso 2: Desarrollo local
+### Paso 2: Desarrollo local
 
 1. Instala las dependencias del proyecto:
    ```bash
@@ -261,9 +259,7 @@ select cron.schedule(
    vercel dev
    ```
 
----
-
-## Paso 3: Despliegue en Vercel
+### Paso 3: Despliegue en Vercel
 
 1. Desde la terminal, corre el comando `vercel` en la raíz del proyecto para desplegar en tu cuenta:
    ```bash
