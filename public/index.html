@@ -1126,6 +1126,12 @@
         
         // Manejador del botón de cerrar sesión
         document.getElementById('logout-btn').addEventListener('click', handleLogout);
+
+        // Si el usuario inicia sesión y ya está en la pestaña de gestión de enlaces, cargamos los enlaces del usuario automáticamente
+        const cardManage = document.getElementById('card-manage');
+        if (cardManage && !cardManage.classList.contains('hidden')) {
+          loadUserLinks();
+        }
       } else {
         // Invitado
         authNav.innerHTML = `
