@@ -226,17 +226,23 @@
               <label for="auth-password" id="auth-password-label">Contraseña</label>
               <a href="#" id="forgot-password-link" style="font-size: 0.8rem; color: var(--primary); text-decoration: underline;" data-i18n="auth_forgot_link">¿Olvidaste tu contraseña?</a>
             </div>
-            <div class="input-wrapper">
+            <div class="input-wrapper" style="position: relative;">
               <i data-lucide="lock" class="input-icon"></i>
-              <input type="password" id="auth-password" required placeholder="••••••••" minlength="6">
+              <input type="password" id="auth-password" required placeholder="••••••••" minlength="6" style="padding-right: 40px;">
+              <button type="button" class="toggle-password-btn" data-target="auth-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0; display: flex; align-items: center;" title="Mostrar contraseña">
+                <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+              </button>
             </div>
           </div>
 
           <div class="input-group hidden" id="confirm-password-group">
             <label for="auth-confirm-password">Confirmar contraseña</label>
-            <div class="input-wrapper">
+            <div class="input-wrapper" style="position: relative;">
               <i data-lucide="lock" class="input-icon"></i>
-              <input type="password" id="auth-confirm-password" placeholder="••••••••" minlength="6">
+              <input type="password" id="auth-confirm-password" placeholder="••••••••" minlength="6" style="padding-right: 40px;">
+              <button type="button" class="toggle-password-btn" data-target="auth-confirm-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0; display: flex; align-items: center;" title="Mostrar contraseña">
+                <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+              </button>
             </div>
           </div>
 
@@ -1290,7 +1296,40 @@
       authModal.classList.add('hidden');
       document.body.style.overflow = '';
       authForm.reset();
+      
+      // Restaurar campos de contraseña a tipo password
+      document.querySelectorAll('#auth-password, #auth-confirm-password').forEach(input => {
+        input.type = 'password';
+      });
+      document.querySelectorAll('.toggle-password-btn i, .toggle-password-btn svg').forEach(icon => {
+        icon.replaceWith(Object.assign(document.createElement('i'), { dataset: { lucide: 'eye' } }));
+      });
+      lucide.createIcons();
     }
+
+    // Lógica para alternar visibilidad de las contraseñas
+    document.querySelectorAll('.toggle-password-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        const icon = btn.querySelector('i') || btn.querySelector('svg');
+        
+        if (input && input.type === 'password') {
+          input.type = 'text';
+          if (icon) {
+            icon.replaceWith(Object.assign(document.createElement('i'), { dataset: { lucide: 'eye-off' } }));
+          }
+          btn.title = currentLang === 'en' ? 'Hide password' : 'Ocultar contraseña';
+        } else if (input) {
+          input.type = 'password';
+          if (icon) {
+            icon.replaceWith(Object.assign(document.createElement('i'), { dataset: { lucide: 'eye' } }));
+          }
+          btn.title = currentLang === 'en' ? 'Show password' : 'Mostrar contraseña';
+        }
+        lucide.createIcons();
+      });
+    });
 
     closeModalBtn.addEventListener('click', closeAuthModal);
     authModal.addEventListener('click', (e) => {
