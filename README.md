@@ -2,7 +2,7 @@
 
 Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
 
-## 🚀 Origen y Justificación del Stack (El Reto)
+## 🚀 Origen y justificación del stack (el reto)
 
 Este proyecto nació como un experimento y exploración personal a raíz de un reto en una sobremesa de **GEG Spain**. La propuesta inicial consistía en crear el acortador utilizando **Google Apps Script + Google Sheets**. Sin embargo, para lograr una solución robusta y moderna, decidimos dar el salto a un stack compuesto por **Vercel y Supabase**.
 
@@ -16,7 +16,7 @@ Este proyecto nació como un experimento y exploración personal a raíz de un r
 | **Búsquedas indexadas** | **Ineficiente**: Búsqueda lineal celda por celda sobre las filas de la hoja. | **Instantánea**: Búsqueda indexada sobre la columna del `slug`. |
 | **Seguridad** | **Compleja**: Difícil segmentar qué filas puede leer o editar cada usuario invitado. | **Nativa**: Supabase ofrece RLS (*Row Level Security*) para control de accesos granular. |
 
-### Exploración del Stack en Planes Gratuitos (Límites)
+### Exploración del stack en planes gratuitos (límites)
 
 Como parte de este ejercicio de aprendizaje continuo y desarrollo personal, el proyecto se ha desplegado utilizando estrictamente los **planes gratuitos** de ambos proveedores, lo que impone ciertas limitaciones a tener en cuenta para su mantenimiento:
 
@@ -29,7 +29,7 @@ Como parte de este ejercicio de aprendizaje continuo y desarrollo personal, el p
   * **Pausa por inactividad**: El proyecto entra en pausa si pasa 1 semana sin recibir tráfico o llamadas a la API (requiere reactivación manual desde el dashboard).
   * **Ancho de banda de red**: 2 GB de salida mensual.
 
-## Estructura del Proyecto
+## Estructura del proyecto
 
 * `public/`: Contiene la interfaz de usuario web (HTML/CSS).
 * `api/shorten.js`: Endpoint API para la creación y registro de enlaces acortados.
@@ -60,7 +60,7 @@ create index idx_urls_slug on urls(slug);
 
 ---
 
-## Paso 2: Desarrollo Local
+## Paso 2: Desarrollo local
 
 1. Instala las dependencias del proyecto:
    ```bash
@@ -92,6 +92,6 @@ create index idx_urls_slug on urls(slug);
    * `SUPABASE_SERVICE_ROLE_KEY`
 3. Vincula tu dominio o subdominio en Vercel (*Project Settings -> Domains*) añadiendo `at.pablofelip.online`.
 4. En tu proveedor de DNS (**OVH**), crea el registro **CNAME** que Vercel te indique:
-   * **Nombre (Subdominio):** `at`
+   * **Nombre (subdominio):** `at`
    * **Tipo:** `CNAME`
    * **Destino:** `cname.vercel-dns.com`
