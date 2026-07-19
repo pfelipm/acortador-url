@@ -10,7 +10,8 @@
   <a href="#estructura-del-proyecto">Estructura del proyecto</a> •
   <a href="#paso-1-configuración-en-supabase">Paso 1: Supabase</a> •
   <a href="#paso-2-desarrollo-local">Paso 2: Desarrollo local</a> •
-  <a href="#paso-3-despliegue-en-vercel">Paso 3: Vercel</a>
+  <a href="#paso-3-despliegue-en-vercel">Paso 3: Vercel</a> •
+  <a href="#⚙️-administración-de-la-aplicación">Administración</a>
 </p>
 
 Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
@@ -286,3 +287,38 @@ select cron.schedule(
    * **Nombre (subdominio):** `at`
    * **Tipo:** `CNAME`
    * **Destino:** `cname.vercel-dns.com`
+
+---
+
+## ⚙️ Administración de la aplicación
+
+Para simplificar la arquitectura del proyecto, evitar código redundante y mantener al máximo la seguridad, **se ha optado por no desarrollar un panel de administración personalizado** para administradores. En su lugar, toda la gestión operativa y de control se realiza directamente usando la potente interfaz web nativa del panel de **Supabase**.
+
+A través del menú de Supabase puedes realizar las siguientes tareas de control:
+
+### 1. Gestión de usuarios registrados
+Desde la sección de **Authentication -> Users** puedes:
+* Visualizar el listado completo de usuarios registrados en el sistema, ver su fecha de creación y último inicio de sesión.
+* Confirmar manualmente correos pendientes de verificación.
+* Suspender, banear o eliminar cuentas de usuario.
+
+### 2. Control de enlaces creados
+Desde el **Table Editor** en la tabla `urls` puedes:
+* Monitorear los enlaces creados por los usuarios (tanto anónimos como registrados).
+* Consultar y modificar estadísticas de clics o cambiar manualmente enlaces de destino originales.
+* Eliminar alias conflictivos de forma directa.
+
+### 3. Ajustes globales de la aplicación
+La personalización del comportamiento de la aplicación se gestiona editando la única fila existente (con `id = 1`) en la tabla `app_settings` del **Table Editor**. A continuación se detallan los parámetros disponibles y su utilidad:
+
+| Columna en `app_settings` | Tipo | Valor inicial | Utilidad y comportamiento |
+| :--- | :--- | :--- | :--- |
+| **`max_urls_per_user`** | `integer` | `100` | Límite máximo de enlaces permanentes que puede guardar un usuario autenticado en su cuenta. |
+| **`anon_url_expiry_days`** | `integer` | `30` | Número de días de validez por defecto para los enlaces generados de manera anónima (sin sesión). |
+| **`allow_user_registration`** | `boolean` | `true` | Si es `true`, la interfaz permite el autorregistro de nuevas cuentas por correo. Si es `false`, se deshabilita la creación de cuentas públicas. |
+| **`enable_auto_cleanup`** | `boolean` | `true` | Activa (`true`) o desactiva (`false`) el borrado diario automático programado en el `cron` para enlaces vencidos. |
+| **`allow_custom_slugs`** | `boolean` | `true` | Habilita la posibilidad de que los usuarios elijan un alias personalizado (ej. `at.pablofelip.online/mi-enlace`). Si se apaga, los slugs serán siempre cadenas aleatorias generadas por el sistema. |
+| **`enable_qr_generation`** | `boolean` | `true` | Muestra u oculta la generación y visualización de códigos QR en la interfaz del cliente. |
+| **`enable_background_image`** | `boolean` | `true` | Si está activo, el fondo de la pantalla de bienvenida cambia de forma aleatoria con imágenes premium obtenidas dinámicamente de Unsplash. |
+| **`min_password_length`** | `integer` | `6` | Define la longitud mínima exigida a los usuarios al registrarse o modificar su contraseña. |
+| **`forbidden_slugs`** | `text[]` | *Ver DDL* | Matriz de alias restringidos (como `api`, `login`, `admin`, etc.) que ningún usuario puede registrar de manera personalizada para evitar colisiones con rutas del sistema. |
