@@ -349,7 +349,7 @@ Por defecto, Supabase envía correos de verificación y restablecimiento de cont
 * **Remitente y dominio propio (SMTP personalizado)**: Por defecto los correos se envían desde `noreply@mail.app.supabase.io`. Si deseas utilizar tu propio dominio (ej. `seguridad@at.pablofelip.online`):
   1. Ve a **Authentication → Emails → SMTP Settings** (o **SMTP Provider**).
   2. Activa la opción **Enable Custom SMTP** (o **Enable custom SMTP**).
-  3. Introduce las credenciales SMTP de tu proveedor de correo electrónico (puedes usar plataformas como Resend, Brevo, SendGrid, o las asociadas a tu propio hosting).
+  3. Introduce las credenciales SMTP de tu proveedor de correo electrónico. Puedes usar plataformas de terceros como **Resend** (que es el proveedor gratuito seleccionado para este proyecto), Brevo, SendGrid, o el servidor SMTP de tu propio hosting.
 
 ---
 
