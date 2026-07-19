@@ -59,6 +59,15 @@ create table urls (
   user_id uuid references auth.users(id) on delete cascade
 );
 
+-- Comentarios de las columnas de la tabla urls
+comment on column urls.id is 'Identificador único autoincrementable de cada enlace';
+comment on column urls.created_at is 'Fecha y hora de creación del enlace acortado';
+comment on column urls.slug is 'Identificador corto personalizado u obtenido al azar para la redirección';
+comment on column urls.url is 'Dirección web original de destino del enlace';
+comment on column urls.clicks is 'Contador del total de redirecciones/visitas efectuadas sobre el enlace';
+comment on column urls.expires_at is 'Fecha y hora opcional tras la cual el enlace dejará de ser válido y será eliminado';
+comment on column urls.user_id is 'Referencia al usuario registrado en Supabase que posee y administra el enlace';
+
 -- Crear un índice en la columna 'slug' para búsquedas ultra rápidas
 create index idx_urls_slug on urls(slug);
 ```
@@ -120,8 +129,18 @@ create table if not exists app_settings (
   forbidden_slugs text[] default array['admin', 'api', 'login', 'signup', 'dashboard', 'settings', 'shorten']
 );
 
--- Comentario descriptivo de la columna min_password_length
+-- Comentarios de las columnas de la tabla app_settings
+comment on column app_settings.id is 'Identificador de la fila única de ajustes globales, restringido a un único valor posible (1)';
+comment on column app_settings.updated_at is 'Fecha y hora del último cambio realizado en la configuración';
+comment on column app_settings.max_urls_per_user is 'Límite máximo de enlaces permitidos por cada usuario registrado';
+comment on column app_settings.anon_url_expiry_days is 'Tiempo de caducidad por defecto (en días) para enlaces generados de forma anónima';
+comment on column app_settings.allow_user_registration is 'Define si se permite a nuevas personas registrarse por sí mismas en la aplicación';
+comment on column app_settings.enable_auto_cleanup is 'Establece si el proceso programado automático de borrado de enlaces expirados está activo';
+comment on column app_settings.allow_custom_slugs is 'Define si los usuarios pueden asignar nombres de alias personalizados en lugar de slugs aleatorios';
+comment on column app_settings.enable_qr_generation is 'Activa o desactiva la capacidad del sitio para generar códigos QR de los enlaces listos';
+comment on column app_settings.enable_background_image is 'Habilita la descarga y visualización de imágenes de fondo dinámicas desde Unsplash en la pantalla principal';
 comment on column app_settings.min_password_length is 'Longitud mínima requerida para las contraseñas de nuevas cuentas';
+comment on column app_settings.forbidden_slugs is 'Matriz de palabras/slugs prohibidos que no se permiten asignar como alias por los usuarios';
 
 -- Habilitar RLS en la tabla de configuraciones
 alter table app_settings enable row level security;
