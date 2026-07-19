@@ -1312,6 +1312,11 @@
         confirmPasswordGroup.classList.remove('hidden');
         authConfirmPassword.setAttribute('required', 'required');
         
+        // Ocultar enlace de recuperación en el cambio directo de contraseña
+        if (forgotPasswordLink) {
+          forgotPasswordLink.classList.add('hidden');
+        }
+
         // Cambiar etiquetas para mayor claridad
         document.querySelector('#password-group label').textContent = t('label_new_password');
         document.querySelector('#confirm-password-group label').textContent = t('label_confirm_new_password');
