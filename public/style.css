@@ -252,6 +252,28 @@ h1 {
   height: 14px;
 }
 
+.change-password-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.change-password-btn:hover {
+  color: var(--primary);
+  opacity: 1;
+}
+
+.change-password-btn i {
+  width: 14px;
+  height: 14px;
+}
+
 /* Tabs de Navegación */
 .dashboard-tabs {
   display: flex;

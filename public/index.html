@@ -557,6 +557,7 @@
         tooltip_qr: "Ver código QR",
         tooltip_copy: "Copiar enlace acortado",
         tooltip_delete: "Eliminar enlace",
+        tooltip_change_password: "Cambiar contraseña",
         err_unexpected: "Ocurrió un error inesperado.",
         err_already_registered: "Este correo electrónico ya está registrado.",
         err_invalid_credentials: "Correo o contraseña incorrectos.",
@@ -657,6 +658,7 @@
         tooltip_qr: "View QR code",
         tooltip_copy: "Copy shortened link",
         tooltip_delete: "Delete link",
+        tooltip_change_password: "Change password",
         err_unexpected: "An unexpected error occurred.",
         err_already_registered: "This email address is already registered.",
         err_invalid_credentials: "Incorrect email or password.",
@@ -1115,6 +1117,9 @@
           <div class="user-badge">
             <i data-lucide="user"></i>
             <span class="user-email" title="${user.email}">${user.email}</span>
+            <button id="change-password-btn" class="change-password-btn" title="${t('tooltip_change_password')}">
+              <i data-lucide="key-round"></i>
+            </button>
             <button id="logout-btn" class="logout-btn" title="${logoutTitleText}">
               <i data-lucide="log-out"></i>
             </button>
@@ -1132,6 +1137,11 @@
           expiryHint.textContent = t('expiry_hint_select');
         }
         
+        // Manejador del botón de cambiar contraseña
+        document.getElementById('change-password-btn').addEventListener('click', () => {
+          openAuthModal('reset-password');
+        });
+
         // Manejador del botón de cerrar sesión
         document.getElementById('logout-btn').addEventListener('click', handleLogout);
 
