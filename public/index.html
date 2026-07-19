@@ -954,17 +954,25 @@
       
       if (lang === 'es') {
         if (anonWarning) {
-          anonWarning.querySelector('span').innerHTML = 'Este enlace es temporal y caducará en 30 días. <a href="#" id="warning-login-link">Inicia sesión o regístrate</a> para conservarlo para siempre.';
+          anonWarning.querySelector('span').innerHTML = allowUserRegistration 
+            ? 'Este enlace es temporal y caducará en 30 días. <a href="#" id="warning-login-link">Inicia sesión o regístrate</a> para conservarlo para siempre.'
+            : 'Este enlace es temporal y caducará en 30 días. <a href="#" id="warning-login-link">Inicia sesión</a> para conservarlo para siempre.';
         }
         if (guestNotice) {
-          guestNotice.querySelector('span').innerHTML = 'Estos enlaces son temporales y se guardan únicamente en este navegador durante 30 días. <a href="#" class="notice-link" id="notice-login-link">Accede o regístrate</a> para conservarlos para siempre.';
+          guestNotice.querySelector('span').innerHTML = allowUserRegistration
+            ? 'Estos enlaces son temporales y se guardan únicamente en este navegador durante 30 días. <a href="#" class="notice-link" id="notice-login-link">Accede o regístrate</a> para conservarlos para siempre.'
+            : 'Estos enlaces son temporales y se guardan únicamente en este navegador durante 30 días. <a href="#" class="notice-link" id="notice-login-link">Accede</a> para conservarlos para siempre.';
         }
       } else {
         if (anonWarning) {
-          anonWarning.querySelector('span').innerHTML = 'This link is temporary and will expire in 30 days. <a href="#" id="warning-login-link">Log in or sign up</a> to keep it forever.';
+          anonWarning.querySelector('span').innerHTML = allowUserRegistration
+            ? 'This link is temporary and will expire in 30 days. <a href="#" id="warning-login-link">Log in or sign up</a> to keep it forever.'
+            : 'This link is temporary and will expire in 30 days. <a href="#" id="warning-login-link">Log in</a> to keep it forever.';
         }
         if (guestNotice) {
-          guestNotice.querySelector('span').innerHTML = 'These links are temporary and saved only in this browser for 30 days. <a href="#" class="notice-link" id="notice-login-link">Log in or sign up</a> to keep them forever.';
+          guestNotice.querySelector('span').innerHTML = allowUserRegistration
+            ? 'These links are temporary and saved only in this browser for 30 days. <a href="#" class="notice-link" id="notice-login-link">Log in or sign up</a> to keep them forever.'
+            : 'These links are temporary and saved only in this browser for 30 days. <a href="#" class="notice-link" id="notice-login-link">Log in</a> to keep them forever.';
         }
       }
       
@@ -1248,10 +1256,19 @@
         modalTitle.textContent = currentLang === 'en' ? 'Log in' : 'Iniciar sesión';
         authSubmitBtn.querySelector('span').textContent = currentLang === 'en' ? 'Log in' : 'Entrar';
         setAuthBtnIcon('log-in');
-        authSwitchText.innerHTML = currentLang === 'en' 
-          ? 'Don\'t have an account? <a href="#" id="auth-switch-link">Sign up for free</a>'
-          : '¿No tienes cuenta? <a href="#" id="auth-switch-link">Regístrate gratis</a>';
+        if (allowUserRegistration) {
+          authSwitchText.innerHTML = currentLang === 'en' 
+            ? 'Don\'t have an account? <a href="#" id="auth-switch-link">Sign up for free</a>'
+            : '¿No tienes cuenta? <a href="#" id="auth-switch-link">Regístrate gratis</a>';
+        } else {
+          authSwitchText.innerHTML = '';
+        }
       } else if (mode === 'signup') {
+        if (!allowUserRegistration) {
+          // Si el registro está desactivado, forzamos la vista de login
+          openAuthModal('login');
+          return;
+        }
         modalTitle.textContent = currentLang === 'en' ? 'Create account' : 'Crear cuenta';
         authSubmitBtn.querySelector('span').textContent = currentLang === 'en' ? 'Sign up' : 'Registrarse';
         setAuthBtnIcon('user-plus');
