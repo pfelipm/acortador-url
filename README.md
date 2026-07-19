@@ -360,6 +360,23 @@ Por defecto, Supabase envía correos de verificación y restablecimiento de cont
     <img src="assets/supabase-smtp-settings.png" alt="Configuración de SMTP personalizado en Supabase" width="100%" />
   </p>
 
+> [!IMPORTANT]
+> **Requisito obligatorio de SMTP para personalización**:
+> Supabase restringe la modificación de las plantillas de correo en sus planes gratuitos si se utiliza su infraestructura de envío por defecto. Para poder editar y guardar el asunto o cuerpo de los correos, **es obligatorio activar un servidor SMTP propio** (como la opción gratuita de **Resend** descrita anteriormente).
+> 
+> **Funcionalidad avanzada (Hooks de correo)**:
+> Supabase ofrece una alternativa avanzada mediante *Auth Hooks* (**Configure Send Email hook**), que desvía el proceso de envío a un Webhook o Edge Function propio. Esto permitiría controlar las plantillas 100% mediante código y enviar correos de forma selectiva en un único idioma según el usuario. En este proyecto se ha descartado esta vía por simplicidad arquitectónica, optando por el envío nativo SMTP bilingüe.
+
+---
+
+## 💡 Reflexiones finales y estado del desarrollo
+
+Este proyecto representa el estado de un desarrollo cerrado, robusto y completamente operativo. A través de este ejercicio, se ha puesto en valor cómo dar el salto a un stack tecnológico avanzado (Vercel + Supabase) permite superar con creces las limitaciones de rendimiento, seguridad e integraciones que impone el muy honesto **Google Apps Script + Google Sheets**, logrando redirecciones del lado del servidor en milisegundos y un control granular y persistente de los datos.
+
+No obstante, esta evolución técnica introduce un debate importante sobre la gestión de recursos. Aunque existe una vida mejor en la nube, también es potencialmente más cara o está sujeta a límites estrictos en sus planes gratuitos (ancho de banda mensual, inactividad de bases de datos o restricciones de SMTP). La clave del éxito para cualquier desarrollador radica en **saber determinar el equilibrio**: saber cuándo una solución totalmente gratuita y sencilla (como Apps Script) es suficiente para cubrir las necesidades, y cuándo los requerimientos del proyecto justifican asumir la complejidad y los límites de un stack más avanzado.
+
+Por encima de todo, este pequeño proyecto reafirma el valor indiscutible de la **experimentación**. Lo que comenzó como un divertido reto de sobremesa planteado por compañeros de **GEG Spain**, se ha transformado a lo largo de un intenso fin de semana en un valioso laboratorio de pruebas y aprendizajes sobre bases de datos indexadas, políticas RLS, redes de distribución Edge y microservicios serverless. La curiosidad y el deseo de explorar nuevas fronteras tecnológicas siguen siendo el mejor motor para el aprendizaje continuo.
+
 ---
 
 ## 👥 Créditos
