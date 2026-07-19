@@ -930,7 +930,9 @@
         urlInput.placeholder = lang === 'es' ? 'https://ejemplo.com/articulo-muy-largo-de-leer' : 'https://example.com/very-long-article-to-read';
       }
       if (slugInput) {
-        slugInput.placeholder = !allowCustomSlugs ? (lang === 'es' ? 'Alias desactivado' : 'Alias disabled') : 'mi-enlace';
+        slugInput.placeholder = !allowCustomSlugs 
+          ? (lang === 'es' ? 'Alias desactivado' : 'Alias disabled') 
+          : (lang === 'es' ? 'mi-enlace' : 'my-link');
         const slugHint = document.querySelector('.label-with-hint span.hint');
         if (slugHint) {
           slugHint.textContent = !allowCustomSlugs 
