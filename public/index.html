@@ -559,6 +559,7 @@
         err_db_save: "Error en la base de datos al guardar el usuario.",
         err_email_required: "Por favor introduce tu correo electrónico.",
         err_invalid_email: "El formato del correo electrónico no es válido.",
+        err_rate_limit: "Por seguridad, solo puedes realizar esta solicitud una vez cada 60 segundos.",
         auth_forgot_link: "¿Olvidaste tu contraseña?",
         modal_forgot_title: "Recuperar contraseña",
         modal_reset_title: "Nueva contraseña",
@@ -658,6 +659,7 @@
         err_db_save: "Database error saving user.",
         err_email_required: "Please enter your email address.",
         err_invalid_email: "The email format is invalid.",
+        err_rate_limit: "For security reasons, you can only request this once every 60 seconds.",
         auth_forgot_link: "Forgot your password?",
         modal_forgot_title: "Reset password",
         modal_reset_title: "New password",
@@ -750,7 +752,9 @@
       "password should be at least 6 characters": "err_password_too_short",
       "signup requires verification": "err_verification_required",
       "database error saving user": "err_db_save",
-      "invalid email": "err_invalid_email"
+      "invalid email": "err_invalid_email",
+      "once every 60 seconds": "err_rate_limit",
+      "rate limit exceeded": "err_rate_limit"
     };
 
     function getFriendlyErrorMessage(message) {
