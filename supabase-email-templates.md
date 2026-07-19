@@ -17,8 +17,8 @@ Este archivo contiene las plantillas bilingües (Español / Inglés) recomendada
 
   <p>Hola / Hello,</p>
 
-  <p>Gracias por registrarte en la aplicación de acortador de URLs. Por favor, haz clic en el siguiente enlace para verificar tu dirección de correo electrónico:</p>
-  <p>Thank you for signing up for the URL shortener app. Please follow the link below to verify your email address:</p>
+  <p>Gracias por registrarte en la aplicación de acortador de URL de Pablo. Por favor, haz clic en el siguiente enlace para verificar tu dirección de correo electrónico:</p>
+  <p>Thank you for signing up for Pablo's URL shortener app. Please follow the link below to verify your email address:</p>
 
   <p style="margin: 30px 0;">
     <a href="{{ .ConfirmationURL }}" style="background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
