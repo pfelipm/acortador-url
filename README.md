@@ -31,6 +31,12 @@ Para entender el rendimiento de este proyecto, resulta útil analizar cómo func
 * **Edge Functions (Servidores distribuidos en el "borde" de la red)**:
   Se ejecutan en los nodos de la red de distribución de contenido (CDN) de Vercel repartidos en todo el mundo. Cuando un usuario de Madrid visita un enlace acortado, la lógica no viaja a un servidor central en América, sino que se procesa en el nodo Edge más cercano al usuario. Los tiempos de arranque son de 0 ms y la redirección HTTP 302 nativa se resuelve en una fracción de segundo, permitiendo previsualizaciones perfectas en redes sociales al instante.
 
+> [!NOTE]
+> **Naturaleza técnica de las Edge Functions**:
+> Aunque están programadas completamente en **JavaScript** (o **TypeScript**), las funciones Edge no se ejecutan sobre un entorno de Node.js tradicional. En su lugar, corren sobre un **motor V8 ligero** (similar al motor que impulsa navegadores web como Google Chrome o proyectos como Deno). 
+> 
+> Al prescindir del sistema operativo y de los módulos pesados de Node.js (como `fs` o `child_process`), logran arranques instantáneos (0 ms de *cold start*) y utilizan APIs estándar de la web (como `fetch`, `Request` y `Response`). Esto las convierte en la herramienta idónea para tareas rápidas de enrutamiento y redirecciones ultra-rápidas.
+
 ### Exploración del stack en planes gratuitos (límites)
 
 Como parte de este ejercicio de aprendizaje continuo y desarrollo personal, el proyecto se ha desplegado utilizando estrictamente los **planes gratuitos** de ambos proveedores, lo que impone ciertas limitaciones a tener en cuenta para su mantenimiento:
