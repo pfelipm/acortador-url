@@ -6,6 +6,14 @@
 
 Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
 
+<p align="center">
+  <a href="https://youtu.be/YkuABEnjews">
+    <img src="https://img.youtube.com/vi/YkuABEnjews/maxresdefault.jpg" alt="Ver video explicativo del Acortador de URLs" width="600">
+  </a>
+  <br>
+  🎬 <i>Haz clic en la imagen para ver el video resumen del proyecto creado con Gemini Notebook</i>
+</p>
+
 ## 🚀 Origen y justificación del stack (el reto)
 
 Este proyecto nació como un experimento y exploración personal a raíz de un reto en una sobremesa de **[GEG Spain](https://transformacioneducativa.es/)**. La propuesta inicial consistía en crear el acortador utilizando **Google Apps Script + Google Sheets**. Sin embargo, la motivación principal del desarrollo fue superar las limitaciones de persistencia de datos e integración de ese ecosistema, logrando una persistencia de datos robusta, escalable y con alto rendimiento fuera del ecosistema de Google Workspace, Google Sheets y Google Apps Script mediante un stack moderno compuesto por **[Vercel](https://vercel.com/) y [Supabase](https://supabase.com/)**.
