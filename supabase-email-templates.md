@@ -45,8 +45,8 @@ Este archivo contiene las plantillas bilingües (Español / Inglés) recomendada
 
   <p>Hola / Hello,</p>
 
-  <p>Hemos recibido una solicitud para cambiar tu contraseña en el acortador de URLs. Haz clic en el botón de abajo para elegir una nueva contraseña:</p>
-  <p>We received a request to change your password for the URL shortener. Click the button below to choose a new password:</p>
+  <p>Hemos recibido una solicitud para cambiar tu contraseña en el acortador de URL de Pablo. Haz clic en el botón de abajo para elegir una nueva contraseña:</p>
+  <p>We received a request to change your password for Pablo's URL shortener. Click the button below to choose a new password:</p>
 
   <p style="margin: 30px 0;">
     <a href="{{ .ConfirmationURL }}" style="background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
