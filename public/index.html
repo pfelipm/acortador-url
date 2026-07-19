@@ -82,7 +82,7 @@
 
     <!-- CARD 1: Creación de Enlaces (Acortador) -->
     <main id="card-create" class="app-card">
-      <form id="shorten-form" class="shorten-form">
+      <form id="shorten-form" class="shorten-form" novalidate>
         <div class="input-group">
           <label for="url-input" data-i18n="dest_url_label">URL de destino (original)</label>
           <div class="input-wrapper">
@@ -569,6 +569,9 @@
         err_email_required: "Por favor introduce tu correo electrónico.",
         err_invalid_email: "El formato del correo electrónico no es válido.",
         err_rate_limit: "Por seguridad, solo puedes realizar esta solicitud una vez cada 60 segundos.",
+        err_url_required: "Por favor, introduce la URL de destino.",
+        err_url_invalid: "Por favor, introduce una dirección URL válida.",
+        err_slug_invalid: "El alias solo puede contener letras, números, guiones y guiones bajos.",
         auth_forgot_link: "¿Olvidaste tu contraseña?",
         modal_forgot_title: "Recuperar contraseña",
         modal_reset_title: "Nueva contraseña",
@@ -670,6 +673,9 @@
         err_email_required: "Please enter your email address.",
         err_invalid_email: "The email format is invalid.",
         err_rate_limit: "For security reasons, you can only request this once every 60 seconds.",
+        err_url_required: "Please enter the destination URL.",
+        err_url_invalid: "Please enter a valid URL address.",
+        err_slug_invalid: "The alias can only contain letters, numbers, hyphens, and underscores.",
         auth_forgot_link: "Forgot your password?",
         modal_forgot_title: "Reset password",
         modal_reset_title: "New password",
@@ -1890,14 +1896,37 @@
     shortenForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
+      const url = urlInput.value.trim();
+      const slug = slugInput.value.trim();
+      const expiry = expirySelect ? expirySelect.value : '30d';
+
+      // 1. Validar que se ha introducido la URL
+      if (!url) {
+        showToast(t('err_url_required'), 'error');
+        return;
+      }
+
+      // 2. Validar formato de la URL
+      try {
+        new URL(url);
+      } catch (_) {
+        showToast(t('err_url_invalid'), 'error');
+        return;
+      }
+
+      // 3. Validar formato del alias personalizado (si se ha introducido)
+      if (slug) {
+        const slugRegex = /^[a-zA-Z0-9_-]+$/;
+        if (!slugRegex.test(slug)) {
+          showToast(t('err_slug_invalid'), 'error');
+          return;
+        }
+      }
+
       submitBtn.disabled = true;
       submitBtn.classList.add('loading');
       submitBtn.querySelector('span').textContent = t('btn_generating');
       resultPanel.classList.add('hidden');
-
-      const url = urlInput.value.trim();
-      const slug = slugInput.value.trim();
-      const expiry = expirySelect ? expirySelect.value : '30d';
 
       try {
         const headers = { 'Content-Type': 'application/json' };
