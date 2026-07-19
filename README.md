@@ -131,6 +131,7 @@ La aplicación cuenta con un panel desplegable de configuración rápida.
 * `vercel.json`: Reglas de enrutamiento del Edge de Vercel, cabeceras CORS y mapeos de rutas para canalizar las redirecciones de slugs y llamadas a la API.
 * `package.json`: Definición del proyecto Node.js, dependencias (@supabase/supabase-js, Express, dotenv) y scripts de arranque.
 * `.env`: Archivo local (ignorado en Git) para almacenar las variables de entorno de conexión segura a Supabase.
+* `supabase-email-templates.md`: Archivo auxiliar con las plantillas de correo electrónico bilingües listas para configurar en Supabase Auth.
 * `LICENSE`: Archivo con los detalles legales y términos de distribución de la licencia AGPL-3.0.
 
 ## 🛠️ Despliegue
@@ -303,10 +304,9 @@ select cron.schedule(
 3. **Configuración de Variables de Entorno**: Añade en los ajustes de Vercel (*Project Settings → Environment Variables*) las siguientes claves:
    * `SUPABASE_URL`
    * `SUPABASE_SERVICE_ROLE_KEY`
-   
-   > [!TIP]
-   > **Integración nativa Vercel ↔ Supabase**:
-   > Para simplificar esto, Vercel dispone de una integración oficial (o *plugin*) instalable desde su panel de integraciones. Al activarla y enlazar tu base de datos, Supabase inyecta y mantiene sincronizadas de forma automática estas variables de entorno en el panel de Vercel sin necesidad de copiarlas y pegarlas manualmente. En este proyecto se han añadido a mano por simplicidad.
+> [!TIP]
+> **Integración nativa Vercel ↔ Supabase**:
+> Para simplificar esto, Vercel dispone de una integración oficial (o *plugin*) instalable desde su panel de integraciones. Al activarla y enlazar tu base de datos, Supabase inyecta y mantiene sincronizadas de forma automática estas variables de entorno en el panel de Vercel sin necesidad de copiarlas y pegarlas manualmente. En este proyecto se han añadido a mano por simplicidad.
 4. Vincula tu dominio o subdominio en Vercel (*Project Settings → Domains*) añadiendo `at.pablofelip.online`.
 5. En tu proveedor de DNS (**OVH**), crea el registro **CNAME** que Vercel te indique:
    * **Nombre (subdominio):** `at`
