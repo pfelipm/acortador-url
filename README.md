@@ -299,11 +299,16 @@ select cron.schedule(
    ```bash
    vercel
    ```
-2. Durante el asistente de configuración o directamente en el panel de Vercel, añade las variables de entorno:
+2. **Integración Continua (CI/CD) con GitHub**: Se recomienda conectar el proyecto de Vercel directamente con tu repositorio de GitHub. De esta forma, cada vez que hagas un `git push` a la rama `main`, Vercel compilará y desplegará de forma automática las actualizaciones sin requerir comandos locales adicionales.
+3. **Configuración de Variables de Entorno**: Añade en los ajustes de Vercel (*Project Settings → Environment Variables*) las siguientes claves:
    * `SUPABASE_URL`
    * `SUPABASE_SERVICE_ROLE_KEY`
-3. Vincula tu dominio o subdominio en Vercel (*Project Settings -> Domains*) añadiendo `at.pablofelip.online`.
-4. En tu proveedor de DNS (**OVH**), crea el registro **CNAME** que Vercel te indique:
+   
+   > [!TIP]
+   > **Integración nativa Vercel ↔ Supabase**:
+   > Para simplificar esto, Vercel dispone de una integración oficial (o *plugin*) instalable desde su panel de integraciones. Al activarla y enlazar tu base de datos, Supabase inyecta y mantiene sincronizadas de forma automática estas variables de entorno en el panel de Vercel sin necesidad de copiarlas y pegarlas manualmente. En este proyecto se han añadido a mano por simplicidad.
+4. Vincula tu dominio o subdominio en Vercel (*Project Settings → Domains*) añadiendo `at.pablofelip.online`.
+5. En tu proveedor de DNS (**OVH**), crea el registro **CNAME** que Vercel te indique:
    * **Nombre (subdominio):** `at`
    * **Tipo:** `CNAME`
    * **Destino:** `cname.vercel-dns.com`
