@@ -91,7 +91,7 @@ La aplicación cuenta con un panel desplegable de configuración rápida.
   <img src="assets/ajustes.png" alt="Pantalla del menú de ajustes" width="90%" />
 </p>
 
-## Estructura del proyecto
+## 📁 Estructura del proyecto
 
 * `public/`: Contiene la interfaz de usuario web (HTML/CSS).
 * `api/shorten.js`: Endpoint API para la creación y registro de enlaces acortados.
@@ -311,7 +311,7 @@ La personalización del comportamiento de la aplicación se gestiona editando la
 
 ---
 
-## Créditos
+## 👥 Créditos
 
 Este proyecto ha sido creado y es mantenido por **Pablo Felip**.
 
@@ -322,6 +322,6 @@ Este proyecto ha sido creado y es mantenido por **Pablo Felip**.
 
 ---
 
-## Licencia
+## 📄 Licencia
 
 Este proyecto está distribuido bajo la licencia **A-GPL-3.0**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
