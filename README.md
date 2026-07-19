@@ -20,6 +20,17 @@ Este proyecto nació como un experimento y exploración personal a raíz de un r
 | **Búsquedas indexadas** | **Ineficiente**: Búsqueda lineal celda por celda sobre las filas de la hoja. | **Instantánea**: Búsqueda indexada sobre la columna del `slug`. |
 | **Seguridad** | **Compleja**: Difícil segmentar qué filas puede leer o editar cada usuario invitado. | **Nativa**: Supabase ofrece RLS (*Row Level Security*) para control de accesos granular. |
 
+### ¿Por qué redirecciones en el Edge?
+
+Para entender el rendimiento de este proyecto, resulta útil analizar cómo funcionan las **Edge Functions** (el entorno donde se ejecuta la redirección en Vercel) en comparación con entornos tradicionales:
+
+* **Google Apps Script (Entorno centralizado de Google)**:
+  Las Web Apps en Apps Script se ejecutan en servidores centrales de Google Cloud. Cada petición requiere levantar la instancia (sufriendo a menudo de *arranque en frío* o *cold start* de varios segundos), leer la hoja de cálculo linealmente y devolver la respuesta envuelta en un sandbox de seguridad de Google (usando iframes o redirección del lado del cliente mediante JS). Esto ralentiza el proceso e impide que los rastreadores de redes sociales lean las vistas previas.
+* **Cloud Functions tradicionales (Servidores serverless regionales)**:
+  Se ejecutan en un centro de datos fijo seleccionado (por ejemplo, en Bélgica o EE. UU.). Aunque son rápidas, la distancia geográfica física entre el usuario y el servidor central añade una latencia inevitable de ida y vuelta a la red.
+* **Edge Functions (Servidores distribuidos en el "borde" de la red)**:
+  Se ejecutan en los nodos de la red de distribución de contenido (CDN) de Vercel repartidos en todo el mundo. Cuando un usuario de Madrid visita un enlace acortado, la lógica no viaja a un servidor central en América, sino que se procesa en el nodo Edge más cercano al usuario. Los tiempos de arranque son de 0 ms y la redirección HTTP 302 nativa se resuelve en una fracción de segundo, permitiendo previsualizaciones perfectas en redes sociales al instante.
+
 ### Exploración del stack en planes gratuitos (límites)
 
 Como parte de este ejercicio de aprendizaje continuo y desarrollo personal, el proyecto se ha desplegado utilizando estrictamente los **planes gratuitos** de ambos proveedores, lo que impone ciertas limitaciones a tener en cuenta para su mantenimiento:
