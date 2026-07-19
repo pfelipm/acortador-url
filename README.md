@@ -1,18 +1,14 @@
-# Acortador de URLs en Vercel & Supabase
-
-<p align="center">
-  <img src="assets/readme_banner.jpg" alt="Banner del proyecto" width="100%" />
-</p>
-
-Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
+# Acortador de URLs con Vercel & Supabase
 
 <p align="center">
   <a href="https://youtu.be/YkuABEnjews">
-    <img src="https://img.youtube.com/vi/YkuABEnjews/maxresdefault.jpg" alt="Ver video explicativo del Acortador de URLs" width="600">
+    <img src="assets/readme-banner-título.webp" alt="Banner del proyecto" width="100%" />
   </a>
   <br>
   🎬 <i>Haz clic en la imagen para ver el video resumen del proyecto creado con Gemini Notebook</i>
 </p>
+
+Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
 
 ## 🚀 Origen y justificación del stack (el reto)
 
