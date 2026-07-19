@@ -37,6 +37,10 @@ Para entender el rendimiento de este proyecto, resulta útil analizar cómo func
 > 
 > Al prescindir del sistema operativo y de los módulos pesados de Node.js (como `fs` o `child_process`), logran arranques instantáneos (0 ms de *cold start*) y utilizan APIs estándar de la web (como `fetch`, `Request` y `Response`). Esto las convierte en la herramienta idónea para tareas rápidas de enrutamiento y redirecciones ultra-rápidas.
 
+<p align="center">
+  <img src="assets/infografía.png" alt="Infografía de arquitectura y Edge" width="100%" />
+</p>
+
 ### Exploración del stack en planes gratuitos (límites)
 
 Como parte de este ejercicio de aprendizaje continuo y desarrollo personal, el proyecto se ha desplegado utilizando estrictamente los **planes gratuitos** de ambos proveedores, lo que impone ciertas limitaciones a tener en cuenta para su mantenimiento:
