@@ -8,7 +8,7 @@
   🎬 <i>Haz clic en la imagen para ver el video resumen del proyecto creado con Gemini Notebook</i>
 </p>
 
-Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
+Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo un URL corto bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
 
 ## 🚀 Origen y justificación del stack (el reto)
 
@@ -121,7 +121,7 @@ La aplicación cuenta con un panel desplegable de configuración rápida.
 * `api/`: Carpeta que contiene las funciones serverless expuestas como endpoints HTTP.
   * `api/config.js`: Endpoint para obtener la configuración dinámica de la base de datos Supabase (límites, longitud de contraseñas, habilitación de temas/QR, etc.).
   * `api/delete-url.js`: Endpoint para eliminar un enlace acortado existente (comprobando permisos mediante la sesión del usuario).
-  * `api/my-urls.js`: Endpoint para listar de manera paginada y filtrada todos los enlaces del usuario autenticado actual.
+  * `api/my-urls.js`: Endpoint para listar de manera paginada y filtrada cada enlace URL del usuario autenticado actual.
   * `api/redirect.js`: Función Edge/Serverless optimizada que intercepta el slug, incrementa el contador de clics en Supabase y efectúa la redirección HTTP 302 hacia la URL original.
   * `api/shorten.js`: Endpoint para crear nuevos enlaces cortos (validando alias prohibidos, aplicando fechas de caducidad por defecto y asignando opcionalmente el ID de usuario).
   * `api/lib/supabase.js`: Inicialización y configuración reutilizable del cliente oficial de Supabase.
@@ -145,7 +145,7 @@ La aplicación cuenta con un panel desplegable de configuración rápida.
 1. Crea un proyecto gratuito en [Supabase](https://supabase.com/).
 2. Ve al **SQL Editor** en tu panel de Supabase y ejecuta las siguientes consultas para preparar tu base de datos:
 
-#### Crear la tabla de URLs y su índice
+#### Crear la tabla de URL y su índice
 ```sql
 -- Crear la tabla para almacenar los enlaces
 create table urls (
@@ -177,7 +177,7 @@ create index idx_urls_slug on urls(slug);
 alter table urls enable row level security;
 
 -- Política: Cualquiera puede leer la URL original a partir del slug (para redirección)
-create policy "Permitir lectura pública de URLs"
+create policy "Permitir lectura pública del URL"
 on urls for select
 using (true);
 
@@ -290,7 +290,7 @@ select cron.schedule(
    SUPABASE_URL=https://tu-proyecto.supabase.co
    SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key-secreta
    ```
-   *(Nota: Se recomienda usar la `service_role` key para poder insertar datos en la tabla sin necesidad de desactivar las políticas de seguridad RLS de Supabase. Si usas la clave `anon`, asegúrate de desactivar RLS en la tabla `urls` o crear políticas que permitan inserts y select de lectura pública).*
+   *(Nota: Se recomienda usar la `service_role` key para poder insertar datos en la tabla sin necesidad de desactivar las políticas de seguridad RLS de Supabase. Si usas la clave `anon`, asegúrate de desactivar RLS en la tabla `urls` o crear políticas que permitan inserts y select de lectura pública del URL).*
 
 3. Instala el CLI de Vercel (si no lo tienes) e inicia el servidor de desarrollo local:
    ```bash
