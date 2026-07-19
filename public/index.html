@@ -181,7 +181,7 @@
       <!-- Nota informativa sobre almacenamiento local para invitados -->
       <div id="guest-info-notice" class="guest-info-notice hidden">
         <i data-lucide="info"></i>
-        <span>Estos enlaces son temporales y se guardan únicamente en este navegador (localStorage) durante 30 días. <a href="#" class="notice-link" id="notice-login-link">Accede o regístrate</a> para conservarlos para siempre.</span>
+        <span>Estos enlaces son temporales y se guardan únicamente en este navegador durante 30 días. <a href="#" class="notice-link" id="notice-login-link">Accede o regístrate</a> para conservarlos para siempre.</span>
       </div>
 
       <!-- Buscador de Enlaces -->
@@ -941,14 +941,14 @@
           anonWarning.querySelector('span').innerHTML = 'Este enlace es temporal y caducará en 30 días. <a href="#" id="warning-login-link">Inicia sesión o regístrate</a> para conservarlo para siempre.';
         }
         if (guestNotice) {
-          guestNotice.querySelector('span').innerHTML = 'Estos enlaces son temporales y se guardan únicamente en este navegador (localStorage) durante 30 días. <a href="#" class="notice-link" id="notice-login-link">Accede o regístrate</a> para conservarlos para siempre.';
+          guestNotice.querySelector('span').innerHTML = 'Estos enlaces son temporales y se guardan únicamente en este navegador durante 30 días. <a href="#" class="notice-link" id="notice-login-link">Accede o regístrate</a> para conservarlos para siempre.';
         }
       } else {
         if (anonWarning) {
           anonWarning.querySelector('span').innerHTML = 'This link is temporary and will expire in 30 days. <a href="#" id="warning-login-link">Log in or sign up</a> to keep it forever.';
         }
         if (guestNotice) {
-          guestNotice.querySelector('span').innerHTML = 'These links are temporary and saved only in this browser (localStorage) for 30 days. <a href="#" class="notice-link" id="notice-login-link">Log in or sign up</a> to keep them forever.';
+          guestNotice.querySelector('span').innerHTML = 'These links are temporary and saved only in this browser for 30 days. <a href="#" class="notice-link" id="notice-login-link">Log in or sign up</a> to keep them forever.';
         }
       }
       
