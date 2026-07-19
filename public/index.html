@@ -165,6 +165,13 @@
           <i data-lucide="info"></i>
           <span data-i18n="result_hint">El enlace redirigirá inmediatamente con previsualización habilitada.</span>
         </div>
+
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+          <button id="shorten-another-btn" class="nav-btn secondary-btn" style="width: 100%; max-width: 250px; justify-content: center; gap: 8px;">
+            <i data-lucide="plus-circle"></i>
+            <span data-i18n="btn_shorten_another">Acortar otro enlace</span>
+          </button>
+        </div>
       </div>
     </main>
 
@@ -506,6 +513,7 @@
         result_ready: "Tu enlace está listo",
         btn_copy: "Copiar",
         btn_copied: "Copiado",
+        btn_shorten_another: "Acortar otro enlace",
         result_hint: "El enlace redirigirá inmediatamente con previsualización habilitada.",
         settings_theme: "Tema",
         theme_auto: "Auto",
@@ -610,6 +618,7 @@
         result_ready: "Your link is ready",
         btn_copy: "Copy",
         btn_copied: "Copied",
+        btn_shorten_another: "Shorten another link",
         result_hint: "The link will redirect immediately with preview enabled.",
         settings_theme: "Theme",
         theme_auto: "Auto",
@@ -717,6 +726,7 @@
     const submitBtn = document.getElementById('submit-btn');
     const resultPanel = document.getElementById('result-panel');
     const shortUrlOutput = document.getElementById('short-url-output');
+    const shortenAnotherBtn = document.getElementById('shorten-another-btn');
     
     const copyBtn = document.getElementById('copy-btn');
     const copyIcon = document.getElementById('copy-icon');
@@ -1824,6 +1834,15 @@
           qrProjectionOverlay.classList.add('hidden');
           document.body.style.overflow = '';
         }
+      });
+    }
+
+    if (shortenAnotherBtn) {
+      shortenAnotherBtn.addEventListener('click', () => {
+        urlInput.value = '';
+        slugInput.value = '';
+        resultPanel.classList.add('hidden');
+        urlInput.focus();
       });
     }
 
