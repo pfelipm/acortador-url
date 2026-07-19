@@ -1,6 +1,8 @@
 # Acortador de URLs en Vercel & Supabase
 
-![Banner del proyecto](assets/readme_banner.jpg)
+<p align="center">
+  <img src="assets/readme_banner.jpg" alt="Banner del proyecto" width="100%" />
+</p>
 
 Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
 
@@ -40,21 +42,27 @@ Permite ingresar cualquier URL larga para obtener su equivalente acortado al ins
 * **Alias personalizado**: Si está habilitado por administración, permite definir un slug descriptivo (ej. `mi-enlace`).
 * **Generación de códigos QR**: Se dibuja dinámicamente un canvas de código QR para facilitar el escaneo desde dispositivos móviles.
 
-![Pantalla de acortar enlace](assets/acortar.png)
+<p align="center">
+  <img src="assets/acortar.png" alt="Pantalla de acortar enlace" width="90%" />
+</p>
 
 ### 2. Gestión de enlaces temporales (modo invitado)
 Los usuarios no autenticados disponen de un historial temporal en su propio navegador.
 * **Persistencia local**: La lista de enlaces generados se guarda en el `localStorage` del navegador durante un periodo máximo de 30 días.
 * **Aviso de conversión**: Un banner recuerda e invita a los usuarios a registrarse para sincronizar y conservar sus enlaces de forma indefinida en la nube.
 
-![Pantalla de enlaces temporales](assets/enlaces-temporales.png)
+<p align="center">
+  <img src="assets/enlaces-temporales.png" alt="Pantalla de enlaces temporales" width="90%" />
+</p>
 
 ### 3. Autenticación y registro
 La app integra el sistema de autenticación segura de Supabase Auth.
 * **Control de acceso**: Permite iniciar sesión, registrarse, recuperar contraseñas perdidas y ocultar/mostrar la contraseña de forma segura.
 * **Validación de contraseña**: Requiere el cumplimiento de la longitud mínima de seguridad configurada dinámicamente en el panel de administración.
 
-![Pantalla de inicio de sesión](assets/iniciar-sesión.png)
+<p align="center">
+  <img src="assets/iniciar-sesión.png" alt="Pantalla de inicio de sesión" width="90%" />
+</p>
 
 ### 4. Panel de gestión personal (mis enlaces)
 Al iniciar sesión, los usuarios acceden a un panel enriquecido donde se administran de forma permanente sus enlaces sincronizados con Supabase.
@@ -62,20 +70,26 @@ Al iniciar sesión, los usuarios acceden a un panel enriquecido donde se adminis
 * **Métricas en tiempo real**: Muestra el contador total de clics registrados, la fecha exacta de expiración y permite la copia o eliminación remota de los enlaces.
 * **Duración flexible**: Habilita la selección de duración de los enlaces (desde 24 horas hasta indefinido).
 
-![Pantalla de mis enlaces de usuario](assets/mis-enlaces.png)
+<p align="center">
+  <img src="assets/mis-enlaces.png" alt="Pantalla de mis enlaces de usuario" width="90%" />
+</p>
 
 ### 5. Proyección de códigos QR
 Ideal para presentaciones, charlas o aulas educativas.
 * **Modo presentación / proyección**: Permite abrir un modal a pantalla completa con el código QR sobredimensionado y la dirección corta en texto grande para que sea legible a gran distancia.
 
-![Pantalla de proyección de código QR](assets/proyectar-qr.png)
+<p align="center">
+  <img src="assets/proyectar-qr.png" alt="Pantalla de proyección de código QR" width="90%" />
+</p>
 
 ### 6. Menú de ajustes y personalización
 La aplicación cuenta con un panel desplegable de configuración rápida.
 * **Preferencia de tema**: Permite alternar la interfaz entre tema claro, oscuro o respetar la configuración automática del sistema operativo.
 * **Preferencia de idioma**: Selección rápida de idioma entre Español, Inglés o detección automática según el navegador del usuario.
 
-![Pantalla del menú de ajustes](assets/ajustes.png)
+<p align="center">
+  <img src="assets/ajustes.png" alt="Pantalla del menú de ajustes" width="90%" />
+</p>
 
 ## Estructura del proyecto
 
