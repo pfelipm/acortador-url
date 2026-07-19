@@ -345,10 +345,10 @@ La personalización del comportamiento de la aplicación se gestiona editando la
 
 ### 4. Personalización de notificaciones por correo
 Por defecto, Supabase envía correos de verificación y restablecimiento de contraseña genéricos en inglés. Puedes adaptarlos y traducirlos en el panel de control de Supabase:
-* **Traducir plantillas**: Ve a **Authentication -> Email Templates**. Ahí puedes personalizar el asunto y el contenido HTML de cada correo (Confirmación de registro, Cambio de contraseña, etc.) en español, usando variables dinámicas como `{{ .ConfirmationURL }}`. En este repositorio tienes disponibles las plantillas bilingües listas para copiar y pegar en [supabase-email-templates.md](supabase-email-templates.md).
+* **Traducir plantillas**: Ve a **Authentication → Email Templates**. Ahí puedes personalizar el asunto y el contenido HTML de cada correo (Confirmación de registro, Cambio de contraseña, etc.) en español, usando variables dinámicas como `{{ .ConfirmationURL }}`. En este repositorio tienes disponibles las plantillas bilingües listas para copiar y pegar en [supabase-email-templates.md](supabase-email-templates.md).
 * **Remitente y dominio propio (SMTP personalizado)**: Por defecto los correos se envían desde `noreply@mail.app.supabase.io`. Si deseas utilizar tu propio dominio (ej. `seguridad@at.pablofelip.online`):
-  1. Ve a **Project Settings -> Auth**.
-  2. Activa la opción **Enable Custom SMTP**.
+  1. Ve a **Authentication → Emails → SMTP Settings** (o **SMTP Provider**).
+  2. Activa la opción **Enable Custom SMTP** (o **Enable custom SMTP**).
   3. Introduce las credenciales SMTP de tu proveedor de correo electrónico (puedes usar plataformas como Resend, Brevo, SendGrid, o las asociadas a tu propio hosting).
 
 ---
