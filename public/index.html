@@ -1304,7 +1304,9 @@
         input.type = 'password';
       });
       document.querySelectorAll('.toggle-password-btn i, .toggle-password-btn svg').forEach(icon => {
-        icon.replaceWith(Object.assign(document.createElement('i'), { dataset: { lucide: 'eye' } }));
+        const el = document.createElement('i');
+        el.setAttribute('data-lucide', 'eye');
+        icon.replaceWith(el);
       });
       lucide.createIcons();
     }
@@ -1319,13 +1321,17 @@
         if (input && input.type === 'password') {
           input.type = 'text';
           if (icon) {
-            icon.replaceWith(Object.assign(document.createElement('i'), { dataset: { lucide: 'eye-off' } }));
+            const el = document.createElement('i');
+            el.setAttribute('data-lucide', 'eye-off');
+            icon.replaceWith(el);
           }
           btn.title = currentLang === 'en' ? 'Hide password' : 'Ocultar contraseña';
         } else if (input) {
           input.type = 'password';
           if (icon) {
-            icon.replaceWith(Object.assign(document.createElement('i'), { dataset: { lucide: 'eye' } }));
+            const el = document.createElement('i');
+            el.setAttribute('data-lucide', 'eye');
+            icon.replaceWith(el);
           }
           btn.title = currentLang === 'en' ? 'Show password' : 'Mostrar contraseña';
         }
