@@ -17,7 +17,7 @@ Este archivo contiene las plantillas bilingües (Español / Inglés) recomendada
 
   <p>Hola / Hello,</p>
 
-  <p>Gracias por registrarte en la aplicación de acortador de URL de Pablo. Por favor, haz clic en el siguiente enlace para verificar tu dirección de correo electrónico:</p>
+  <p>Gracias por registrarte en el acortador de URL de Pablo. Por favor, haz clic en el siguiente enlace para verificar tu dirección de correo electrónico:</p>
   <p>Thank you for signing up for Pablo's URL shortener app. Please follow the link below to verify your email address:</p>
 
   <p style="margin: 30px 0;">
