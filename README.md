@@ -1,5 +1,7 @@
 # Acortador de URLs en Vercel & Supabase
 
+![Banner del proyecto](assets/readme_banner.jpg)
+
 Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
 
 ## 🚀 Origen y justificación del stack (el reto)
