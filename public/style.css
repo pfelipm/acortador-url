@@ -259,12 +259,13 @@ h1 {
   padding: 4px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
-  max-width: 340px;
+  max-width: 380px;
   margin: 10px auto 0;
 }
 
 .tab-btn {
-  flex: 1;
+  flex: 1 1 0%;
+  width: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -278,6 +279,7 @@ h1 {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .tab-btn.active {
