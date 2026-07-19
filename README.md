@@ -11,7 +11,9 @@
   <a href="#paso-1-configuración-en-supabase">Paso 1: Supabase</a> •
   <a href="#paso-2-desarrollo-local">Paso 2: Desarrollo local</a> •
   <a href="#paso-3-despliegue-en-vercel">Paso 3: Vercel</a> •
-  <a href="#⚙️-administración-de-la-aplicación">Administración</a>
+  <a href="#⚙️-administración-de-la-aplicación">Administración</a> •
+  <a href="#créditos">Créditos</a> •
+  <a href="#licencia">Licencia</a>
 </p>
 
 Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
@@ -322,3 +324,20 @@ La personalización del comportamiento de la aplicación se gestiona editando la
 | **`enable_background_image`** | `boolean` | `true` | Si está activo, el fondo de la pantalla de bienvenida cambia de forma aleatoria con imágenes premium obtenidas dinámicamente de Unsplash. |
 | **`min_password_length`** | `integer` | `6` | Define la longitud mínima exigida a los usuarios al registrarse o modificar su contraseña. |
 | **`forbidden_slugs`** | `text[]` | *Ver DDL* | Matriz de alias restringidos (como `api`, `login`, `admin`, etc.) que ningún usuario puede registrar de manera personalizada para evitar colisiones con rutas del sistema. |
+
+---
+
+## Créditos
+
+Este proyecto ha sido creado y es mantenido por **Pablo Felip Monferrer** (pfelipm).
+
+- Sitio web: [pablofelip.online/sobre-mi](https://pablofelip.online/sobre-mi)
+- GitHub: [pfelipm](https://github.com/pfelipm)
+- LinkedIn: [in/pfelipm](https://www.linkedin.com/in/pfelipm/)
+- X: [@pfelipm](https://x.com/pfelipm)
+
+---
+
+## Licencia
+
+Este proyecto está bajo la Licencia **GNU General Public License v3.0**. Para más información, consulta el archivo [LICENSE](LICENSE).
