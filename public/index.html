@@ -1185,6 +1185,9 @@
       authEmail.setAttribute('required', 'required');
       authPassword.setAttribute('required', 'required');
       authConfirmPassword.removeAttribute('required');
+      if (forgotPasswordLink) {
+        forgotPasswordLink.classList.remove('hidden');
+      }
       
       // Resetear etiquetas por defecto sin duplicar elementos
       const emailLabel = document.getElementById('auth-email-label');
