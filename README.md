@@ -31,6 +31,45 @@ Como parte de este ejercicio de aprendizaje continuo y desarrollo personal, el p
   * **Pausa por inactividad**: El proyecto entra en pausa si pasa 1 semana sin recibir tráfico o llamadas a la API (requiere reactivación manual desde el dashboard).
   * **Ancho de banda de red**: 2 GB de salida mensual.
 
+## 🎯 Funcionalidades de la aplicación
+
+La aplicación dispone de una interfaz premium y adaptativa desarrollada en HTML, CSS (Vanilla) y JavaScript con soporte multi-idioma (Español e Inglés) y un sistema avanzado de personalización. Las funciones clave son las siguientes:
+
+### 1. Acortador de enlaces (generación rápida)
+Permite ingresar cualquier URL larga para obtener su equivalente acortado al instante. Los usuarios invitados generan enlaces aleatorios con una duración predeterminada de 30 días.
+* **Alias personalizado**: Si está habilitado por administración, permite definir un slug descriptivo (ej. `mi-enlace`).
+* **Generación de códigos QR**: Se dibuja dinámicamente un canvas de código QR para facilitar el escaneo desde dispositivos móviles.
+
+![Pantalla de acortar enlace](assets/acortar.png)
+
+### 2. Gestión de enlaces temporales (modo invitado)
+Los usuarios no autenticados disponen de un historial temporal en su propio navegador.
+* **Persistencia local**: La lista de enlaces generados se guarda en el `localStorage` del navegador durante un periodo máximo de 30 días.
+* **Aviso de conversión**: Un banner recuerda e invita a los usuarios a registrarse para sincronizar y conservar sus enlaces de forma indefinida en la nube.
+
+![Pantalla de enlaces temporales](assets/enlaces-temporales.png)
+
+### 3. Autenticación y registro
+La app integra el sistema de autenticación segura de Supabase Auth.
+* **Control de acceso**: Permite iniciar sesión, registrarse, recuperar contraseñas perdidas y ocultar/mostrar la contraseña de forma segura.
+* **Validación de contraseña**: Requiere el cumplimiento de la longitud mínima de seguridad configurada dinámicamente en el panel de administración.
+
+![Pantalla de inicio de sesión](assets/iniciar-sesión.png)
+
+### 4. Panel de gestión personal (mis enlaces)
+Al iniciar sesión, los usuarios acceden a un panel enriquecido donde se administran de forma permanente sus enlaces sincronizados con Supabase.
+* **Buscador integrado**: Permite filtrar los enlaces en tiempo real por su slug o por su URL original de destino.
+* **Métricas en tiempo real**: Muestra el contador total de clics registrados, la fecha exacta de expiración y permite la copia o eliminación remota de los enlaces.
+* **Duración flexible**: Habilita la selección de duración de los enlaces (desde 24 horas hasta indefinido).
+
+![Pantalla de mis enlaces de usuario](assets/mis-enlaces.png)
+
+### 5. Proyección de códigos QR
+Ideal para presentaciones, charlas o aulas educativas.
+* **Modo presentación / proyección**: Permite abrir un modal a pantalla completa con el código QR sobredimensionado y la dirección corta en texto grande para que sea legible a gran distancia.
+
+![Pantalla de proyección de código QR](assets/proyectar-qr.png)
+
 ## Estructura del proyecto
 
 * `public/`: Contiene la interfaz de usuario web (HTML/CSS).
