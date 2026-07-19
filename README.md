@@ -1,4 +1,4 @@
-# Acortador de URLs con Supabase y Vercel
+# Acortador de URL con Supabase y Vercel
 
 <p align="center">
   <a href="https://youtu.be/YkuABEnjews">
