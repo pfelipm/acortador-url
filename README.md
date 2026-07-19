@@ -4,6 +4,15 @@
   <img src="assets/readme_banner.jpg" alt="Banner del proyecto" width="100%" />
 </p>
 
+<p align="center">
+  <a href="#origen-y-justificación-del-stack-el-reto">Origen y justificación</a> •
+  <a href="#funcionalidades-de-la-aplicación">Funcionalidades</a> •
+  <a href="#estructura-del-proyecto">Estructura del proyecto</a> •
+  <a href="#paso-1-configuración-en-supabase">Paso 1: Supabase</a> •
+  <a href="#paso-2-desarrollo-local">Paso 2: Desarrollo local</a> •
+  <a href="#paso-3-despliegue-en-vercel">Paso 3: Vercel</a>
+</p>
+
 Este proyecto es una aplicación serverless diseñada para alojarse en **Vercel** y utilizar **Supabase** como base de datos, sirviendo URLs cortas bajo tu dominio personalizado (por ejemplo, `at.pablofelip.online/tu-slug`) con redirecciones rápidas del lado del servidor (HTTP 302).
 
 ## 🚀 Origen y justificación del stack (el reto)
