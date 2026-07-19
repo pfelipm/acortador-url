@@ -371,7 +371,7 @@ Por defecto, Supabase envía correos de verificación y restablecimiento de cont
 
 ## 💡 Reflexiones finales y estado del desarrollo
 
-Este proyecto representa el estado de un desarrollo cerrado, robusto y completamente operativo. A través de este ejercicio, se ha puesto en valor cómo dar el salto a un stack tecnológico avanzado (Vercel + Supabase) permite superar con creces las limitaciones de rendimiento, seguridad e integraciones que impone el muy honesto **Google Apps Script + Google Sheets**, logrando redirecciones del lado del servidor en milisegundos y un control granular y persistente de los datos.
+Este proyecto representa el estado de un desarrollo cerrado, robusto y completamente operativo. A través de este ejercicio, se ha puesto en valor cómo dar el salto a un stack tecnológico avanzado (Vercel + Supabase) permite superar con creces las limitaciones de rendimiento, seguridad e integraciones que imponen los muy convenientes y honestos **Google Apps Script + Google Sheets**, logrando redirecciones del lado del servidor en milisegundos y un control granular y persistente de los datos.
 
 No obstante, esta evolución técnica introduce un debate importante sobre la gestión de recursos. Aunque existe una vida mejor en la nube, también es potencialmente más cara o está sujeta a límites estrictos en sus planes gratuitos (ancho de banda mensual, inactividad de bases de datos o restricciones de SMTP). La clave del éxito para cualquier desarrollador radica en **saber determinar el equilibrio**: saber cuándo una solución totalmente gratuita y sencilla (como Apps Script) es suficiente para cubrir las necesidades, y cuándo los requerimientos del proyecto justifican asumir la complejidad y los límites de un stack más avanzado.
 
