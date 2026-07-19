@@ -114,11 +114,24 @@ La aplicación cuenta con un panel desplegable de configuración rápida.
 
 ## 📁 Estructura del proyecto
 
-* `public/`: Contiene la interfaz de usuario web (HTML/CSS).
-* `api/shorten.js`: Endpoint API para la creación y registro de enlaces acortados.
-* `api/redirect.js`: Función serverless para buscar el slug en la base de datos, sumar el click y realizar la redirección 302.
-* `api/lib/supabase.js`: Inicialización del cliente de Supabase.
-* `vercel.json`: Reglas de enrutamiento y redirección en el Edge de Vercel.
+* `api/`: Carpeta que contiene las funciones serverless expuestas como endpoints HTTP.
+  * `api/config.js`: Endpoint para obtener la configuración dinámica de la base de datos Supabase (límites, longitud de contraseñas, habilitación de temas/QR, etc.).
+  * `api/delete-url.js`: Endpoint para eliminar un enlace acortado existente (comprobando permisos mediante la sesión del usuario).
+  * `api/my-urls.js`: Endpoint para listar de manera paginada y filtrada todos los enlaces del usuario autenticado actual.
+  * `api/redirect.js`: Función Edge/Serverless optimizada que intercepta el slug, incrementa el contador de clics en Supabase y efectúa la redirección HTTP 302 hacia la URL original.
+  * `api/shorten.js`: Endpoint para crear nuevos enlaces cortos (validando alias prohibidos, aplicando fechas de caducidad por defecto y asignando opcionalmente el ID de usuario).
+  * `api/lib/supabase.js`: Inicialización y configuración reutilizable del cliente oficial de Supabase.
+* `public/`: Contiene los recursos estáticos de la interfaz web cliente.
+  * `public/index.html`: Estructura HTML de la aplicación que incluye el sistema completo de vistas (Dashboard, modal de login, proyector QR) y lógica interactiva de JavaScript (i18n, Supabase Auth y sincronización local).
+  * `public/style.css`: Estilos visuales en Vanilla CSS que implementan el sistema de diseño premium, temas claro/oscuro y Glassmorphism de la interfaz.
+  * `public/favicon.svg`: Icono de favoritos oficial de la aplicación.
+  * `public/js/qrcode.min.js`: Librería local para renderizar dinámicamente los códigos QR en el cliente.
+* `assets/`: Imágenes de documentación e infografías explicativas del funcionamiento de la app.
+* `server.js`: Servidor local basado en Express para emular las Serverless Functions de Vercel y facilitar el desarrollo local sin dependencias del CLI de Vercel.
+* `vercel.json`: Reglas de enrutamiento del Edge de Vercel, cabeceras CORS y mapeos de rutas para canalizar las redirecciones de slugs y llamadas a la API.
+* `package.json`: Definición del proyecto Node.js, dependencias (@supabase/supabase-js, Express, dotenv) y scripts de arranque.
+* `.env`: Archivo local (ignorado en Git) para almacenar las variables de entorno de conexión segura a Supabase.
+* `LICENSE`: Archivo con los detalles legales y términos de distribución de la licencia AGPL-3.0.
 
 ## 🛠️ Despliegue
 
